@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Maintenances - AB Maintenance</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height:100vh;
+            margin:0;
+            background:linear-gradient(135deg,#141c26,#283949);
+            font-family:Arial,sans-serif;
+        }
+
+        .navbar {
+            background:rgba(20,28,38,.98)!important;
+            padding:14px 20px;
+        }
+
+        .navbar-brand {
+            font-weight:700;
+            font-size:22px;
+        }
+
+        .page-container {
+            max-width:1450px;
+            margin:40px auto;
+            padding:0 25px 50px;
+        }
+
+        .page-header {
+            color:white;
+            margin-bottom:25px;
+        }
+
+        .page-header h1 {
+            font-size:36px;
+            font-weight:700;
+        }
+
+        .table-card {
+            background:white;
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 14px 35px rgba(0,0,0,.25);
+        }
+
+        .table {
+            margin:0;
+        }
+
+        .table thead th {
+            background:#212529;
+            color:white;
+            border:none;
+            padding:16px;
+        }
+
+        .table tbody td {
+            padding:14px 16px;
+            vertical-align:middle;
+        }
+
+        .btn {
+            border-radius:9px;
+            font-weight:500;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a th:href="@{/dashboard}"
+           class="btn btn-outline-light">
+
+            Dashboard
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h1>
+            <i class="bi bi-calendar-check me-2"></i>
+            Maintenance préventive
+        </h1>
+
+        <p style="color:#c4ccd4;">
+            Consultez et suivez les maintenances planifiées.
+        </p>
+
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+
+                <tr>
+                    <th>Équipement</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                    <th>Date prévue</th>
+                    <th>Date réalisée</th>
+                    <th>Technicien</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+
+                </thead>
+
+                <tbody>
+
+                <tr th:each="maintenance : ${maintenances}">
+
+                    <td>
+                        <strong th:text="${maintenance.equipement.nom}">
+                        </strong>
+                    </td>
+
+                    <td th:text="${maintenance.type}">
+                    </td>
+
+                    <td th:text="${maintenance.description}">
+                    </td>
+
+                    <td th:text="${maintenance.datePrevue}">
+                    </td>
+
+                    <td th:text="${maintenance.dateRealisation}">
+                    </td>
+
+                    <td>
+
+                        <span th:if="${maintenance.technicien != null}"
+                              th:text="${maintenance.technicien.prenom + ' ' + maintenance.technicien.nom}">
+                        </span>
+
+                        <span th:if="${maintenance.technicien == null}">
+                            Non affecté
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <span th:if="${maintenance.statut.name() == 'PLANIFIEE'}"
+                              class="badge bg-secondary">
+                            Planifiée
+                        </span>
+
+                        <span th:if="${maintenance.statut.name() == 'EN_COURS'}"
+                              class="badge bg-warning text-dark">
+                            En cours
+                        </span>
+
+                        <span th:if="${maintenance.statut.name() == 'TERMINEE'}"
+                              class="badge bg-success">
+                            Terminée
+                        </span>
+
+                        <span th:if="${maintenance.statut.name() == 'EN_RETARD'}"
+                              class="badge bg-danger">
+                            En retard
+                        </span>
+
+                        <span th:if="${maintenance.statut.name() == 'ANNULEE'}"
+                              class="badge bg-dark">
+                            Annulée
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <a th:if="${maintenance.statut.name() == 'PLANIFIEE'
+                                      or maintenance.statut.name() == 'EN_RETARD'}"
+                               th:href="@{/maintenances/demarrer/{id}(id=${maintenance.id})}"
+                               class="btn btn-sm btn-primary">
+
+                                <i class="bi bi-play-circle me-1"></i>
+                                Démarrer
+
+                            </a>
+
+                            <a th:if="${maintenance.statut.name() == 'EN_COURS'}"
+                               th:href="@{/maintenances/terminer/{id}(id=${maintenance.id})}"
+                               class="btn btn-sm btn-success">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Terminer
+
+                            </a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(maintenances)}">
+
+                    <td colspan="8"
+                        class="text-center text-muted py-4">
+
+                        Aucune maintenance planifiée.
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

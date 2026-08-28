@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Pannes - AB Maintenance
+    </title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    #141c26,
+                    #283949
+                );
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(20, 28, 38, 0.98) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+            padding: 14px 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .page-container {
+            max-width: 1500px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            color: white;
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .page-header p {
+            color: #c4ccd4;
+            margin-bottom: 0;
+        }
+
+        .table-card {
+            background: white;
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow:
+                0 14px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .table-card .card-body {
+            padding: 0;
+        }
+
+        .table {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: #212529;
+            color: white;
+            border: none;
+            padding: 16px;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .btn {
+            border-radius: 9px;
+            font-weight: 500;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .status-badge,
+        .urgence-badge {
+            font-size: 0.82rem;
+            padding: 7px 10px;
+            border-radius: 8px;
+        }
+
+        .empty-state {
+            padding: 45px 20px;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .description-cell {
+            max-width: 280px;
+            white-space: normal;
+        }
+
+        @media (max-width: 768px) {
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-header h1 {
+                font-size: 30px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- ========================= -->
+<!-- NAVBAR -->
+<!-- ========================= -->
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a
+            th:href="@{/dashboard}"
+            class="btn btn-outline-light">
+
+            <i class="bi bi-speedometer2 me-1"></i>
+            Dashboard
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ========================= -->
+<!-- CONTENU -->
+<!-- ========================= -->
+
+<div class="page-container">
+
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <div class="page-header">
+
+        <div>
+
+            <h1>
+                <i class="bi bi-exclamation-octagon me-2"></i>
+                Gestion des pannes
+            </h1>
+
+            <p>
+                Consultez les pannes signalées,
+                validez-les et planifiez les interventions nécessaires.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- TABLEAU -->
+    <!-- ========================= -->
+
+    <div class="card table-card">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Référence</th>
+                        <th>Équipement</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Urgence</th>
+                        <th>Statut</th>
+                        <th>Déclarée par</th>
+                        <th>Actions</th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <tr th:each="panne : ${pannes}">
+
+
+                        <!-- ID -->
+
+                        <td th:text="${panne.id}">
+                        </td>
+
+
+                        <!-- REFERENCE -->
+
+                        <td>
+
+                            <strong
+                                th:text="${panne.reference}">
+                            </strong>
+
+                        </td>
+
+
+                        <!-- EQUIPEMENT -->
+
+                        <td>
+
+                            <span
+                                th:text="${panne.equipement != null
+                                    ? panne.equipement.nom
+                                    : '-'}">
+                            </span>
+
+                        </td>
+
+
+                        <!-- DESCRIPTION -->
+
+                        <td
+                            class="description-cell"
+                            th:text="${panne.description}">
+                        </td>
+
+
+                        <!-- DATE -->
+
+                        <td th:text="${panne.dateSignalement}">
+                        </td>
+
+
+                        <!-- ========================= -->
+                        <!-- URGENCE -->
+                        <!-- ========================= -->
+
+                        <td>
+
+
+                            <span
+                                th:if="${panne.urgence != null
+                                    and panne.urgence.name() == 'FAIBLE'}"
+                                class="badge bg-success urgence-badge">
+
+                                <i class="bi bi-circle-fill me-1"></i>
+                                Faible
+
+                            </span>
+
+
+                            <span
+                                th:if="${panne.urgence != null
+                                    and panne.urgence.name() == 'MOYENNE'}"
+                                class="badge bg-primary urgence-badge">
+
+                                <i class="bi bi-circle-fill me-1"></i>
+                                Moyenne
+
+                            </span>
+
+
+                            <span
+                                th:if="${panne.urgence != null
+                                    and panne.urgence.name() == 'ELEVEE'}"
+                                class="badge bg-warning text-dark urgence-badge">
+
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Élevée
+
+                            </span>
+
+
+                            <span
+                                th:if="${panne.urgence != null
+                                    and panne.urgence.name() == 'CRITIQUE'}"
+                                class="badge bg-danger urgence-badge">
+
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                Critique
+
+                            </span>
+
+
+                            <span
+                                th:if="${panne.urgence == null}"
+                                class="badge bg-secondary">
+
+                                Non définie
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ========================= -->
+                        <!-- STATUT -->
+                        <!-- ========================= -->
+
+                        <td>
+
+
+                            <!-- SIGNALEE -->
+
+                            <span
+                                th:if="${panne.statut != null
+                                    and panne.statut.name() == 'SIGNALEE'}"
+                                class="badge bg-warning text-dark status-badge">
+
+                                <i class="bi bi-exclamation-circle me-1"></i>
+                                Signalée
+
+                            </span>
+
+
+                            <!-- VALIDEE -->
+
+                            <span
+                                th:if="${panne.statut != null
+                                    and panne.statut.name() == 'VALIDEE'}"
+                                class="badge bg-success status-badge">
+
+                                <i class="bi bi-check-circle me-1"></i>
+                                Validée
+
+                            </span>
+
+
+                            <!-- EN DIAGNOSTIC -->
+
+                            <span
+                                th:if="${panne.statut != null
+                                    and panne.statut.name() == 'EN_DIAGNOSTIC'}"
+                                class="badge bg-primary status-badge">
+
+                                <i class="bi bi-search me-1"></i>
+                                En diagnostic
+
+                            </span>
+
+
+                            <!-- EN INTERVENTION -->
+
+                            <span
+                                th:if="${panne.statut != null
+                                    and panne.statut.name() == 'EN_INTERVENTION'}"
+                                class="badge bg-info text-dark status-badge">
+
+                                <i class="bi bi-tools me-1"></i>
+                                En intervention
+
+                            </span>
+
+
+                            <!-- RESOLUE -->
+
+                            <span
+                                th:if="${panne.statut != null
+                                    and panne.statut.name() == 'RESOLUE'}"
+                                class="badge bg-success status-badge">
+
+                                <i class="bi bi-check2-circle me-1"></i>
+                                Résolue
+
+                            </span>
+
+
+                            <span
+                                th:if="${panne.statut == null}"
+                                class="badge bg-secondary">
+
+                                Non défini
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ========================= -->
+                        <!-- DECLAREE PAR -->
+                        <!-- ========================= -->
+
+                        <td>
+
+                            <span
+                                th:if="${panne.utilisateur != null}"
+                                th:text="${panne.utilisateur.prenom
+                                    + ' '
+                                    + panne.utilisateur.nom}">
+                            </span>
+
+                            <span
+                                th:if="${panne.utilisateur == null}"
+                                class="text-muted">
+
+                                -
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- ========================= -->
+                        <!-- ACTIONS -->
+                        <!-- ========================= -->
+
+                        <td>
+
+                            <div class="action-buttons">
+
+
+                                <!-- VOIR -->
+
+                                <a
+                                    th:href="@{/pannes/{id}(id=${panne.id})}"
+                                    class="btn btn-primary btn-sm">
+
+                                    <i class="bi bi-eye me-1"></i>
+                                    Voir
+
+                                </a>
+
+
+                                <!-- VALIDER -->
+
+                                <form
+                                    th:if="${panne.statut != null
+                                        and panne.statut.name() == 'SIGNALEE'}"
+                                    th:action="@{/pannes/valider/{id}(id=${panne.id})}"
+                                    method="post"
+                                    class="d-inline">
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-success btn-sm">
+
+                                        <i class="bi bi-check-circle me-1"></i>
+                                        Valider
+
+                                    </button>
+
+                                </form>
+
+
+                                <!-- PLANIFIER INTERVENTION -->
+
+                                <a
+                                    th:if="${panne.statut != null
+                                        and panne.statut.name() == 'VALIDEE'}"
+                                    th:href="@{/interventions/creer/{id}(id=${panne.id})}"
+                                    class="btn btn-dark btn-sm">
+
+                                    <i class="bi bi-calendar-plus me-1"></i>
+                                    Planifier intervention
+
+                                </a>
+
+
+                            </div>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    <!-- ========================= -->
+                    <!-- AUCUNE PANNE -->
+                    <!-- ========================= -->
+
+                    <tr th:if="${#lists.isEmpty(pannes)}">
+
+                        <td
+                            colspan="9"
+                            class="empty-state">
+
+                            <i class="bi bi-check-circle fs-2 d-block mb-2"></i>
+
+                            Aucune panne enregistrée.
+
+                        </td>
+
+                    </tr>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- RETOUR -->
+    <!-- ========================= -->
+
+    <div class="mt-4">
+
+        <a
+            th:href="@{/dashboard}"
+            class="btn btn-outline-light">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Retour au Dashboard
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<!-- Bootstrap JavaScript -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

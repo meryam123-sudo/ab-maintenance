@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>
+        Dashboard - AB Maintenance
+    </title>
+
+
+    <!-- ========================= -->
+    <!-- CSRF SPRING SECURITY -->
+    <!-- ========================= -->
+
+    <meta name="_csrf"
+          th:content="${_csrf.token}">
+
+    <meta name="_csrf_header"
+          th:content="${_csrf.headerName}">
+
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+    <!-- ========================= -->
+    <!-- STYLE DASHBOARD -->
+    <!-- ========================= -->
+
+    <style>
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background:
+                linear-gradient(
+                    135deg,
+                    #141c26,
+                    #283949
+                );
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(20, 28, 38, 0.98) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+            padding: 14px 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .navbar .nav-link {
+            color: #c9d1d9 !important;
+            font-weight: 500;
+            margin-right: 8px;
+            transition: 0.2s;
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link.active {
+            color: #ffffff !important;
+        }
+
+        .dashboard-container {
+            max-width: 1350px;
+            margin: 40px auto;
+            padding: 0 20px 50px;
+        }
+
+        .dashboard-header {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            font-size: 38px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-header p {
+            color: #c4ccd4;
+            font-size: 17px;
+        }
+
+        .stat-card,
+        .quick-card {
+            border: none;
+            border-radius: 18px;
+            background: white;
+            box-shadow:
+                0 12px 30px rgba(0, 0, 0, 0.20);
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover,
+        .quick-card:hover {
+            transform: translateY(-4px);
+            box-shadow:
+                0 18px 40px rgba(0, 0, 0, 0.28);
+        }
+
+        .stat-card .card-body,
+        .quick-card .card-body {
+            padding: 25px;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 18px;
+        }
+
+        .icon-blue {
+            background: #e8f1ff;
+            color: #0d6efd;
+        }
+
+        .icon-red {
+            background: #fdebed;
+            color: #dc3545;
+        }
+
+        .icon-yellow {
+            background: #fff4d6;
+            color: #d39e00;
+        }
+
+        .stat-number {
+            font-size: 38px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            color: white;
+            font-weight: 700;
+            margin-top: 45px;
+            margin-bottom: 22px;
+        }
+
+        .quick-card h5 {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .quick-card p {
+            color: #6c757d;
+            min-height: 48px;
+        }
+
+        .quick-icon {
+            font-size: 28px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .btn {
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ========================= -->
+<!-- NAVBAR -->
+<!-- ========================= -->
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarMenu"
+            aria-controls="navbarMenu"
+            aria-expanded="false"
+            aria-label="Afficher la navigation">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <div
+            class="collapse navbar-collapse"
+            id="navbarMenu">
+
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+
+                <!-- Dashboard -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link active"
+                       aria-current="page"
+                       th:href="@{/dashboard}">
+
+                        Dashboard
+
+                    </a>
+
+                </li>
+
+
+                <!-- Équipements -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                       th:href="@{/equipements}">
+
+                        Équipements
+
+                    </a>
+
+                </li>
+
+
+                <!-- Pannes : ADMIN et RESPONSABLE -->
+
+                <li class="nav-item"
+                    th:if="${isAdmin or isResponsable}">
+
+                    <a class="nav-link"
+                       th:href="@{/pannes}">
+
+                        Pannes
+
+                    </a>
+
+                </li>
+
+
+                <!-- Interventions -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                       th:href="@{/interventions}">
+
+                        Interventions
+
+                    </a>
+
+                </li>
+
+
+                <!-- Maintenances -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link"
+                       th:href="@{/maintenances}">
+
+                        Maintenances
+
+                    </a>
+
+                </li>
+
+
+                <!-- Utilisateurs : ADMIN -->
+
+                <li class="nav-item"
+                    th:if="${isAdmin}">
+
+                    <a class="nav-link"
+                       th:href="@{/utilisateurs}">
+
+                        Utilisateurs
+
+                    </a>
+
+                </li>
+
+
+                <!-- Rôles : ADMIN -->
+
+                <li class="nav-item"
+                    th:if="${isAdmin}">
+
+                    <a class="nav-link"
+                       th:href="@{/roles}">
+
+                        Rôles
+
+                    </a>
+
+                </li>
+
+
+                <!-- Catégories : ADMIN -->
+
+                <li class="nav-item"
+                    th:if="${isAdmin}">
+
+                    <a class="nav-link"
+                       th:href="@{/categories}">
+
+                        Catégories
+
+                    </a>
+
+                </li>
+
+
+                <!-- Rapports : ADMIN et RESPONSABLE -->
+
+                <li class="nav-item"
+                    th:if="${isAdmin or isResponsable}">
+
+                    <a class="nav-link"
+                       th:href="@{/rapports}">
+
+                        Rapports
+
+                    </a>
+
+                </li>
+
+
+            </ul>
+
+
+            <!-- ========================= -->
+            <!-- DECONNEXION -->
+            <!-- ========================= -->
+
+            <form th:action="@{/logout}"
+                  method="post"
+                  class="d-flex">
+
+                <button
+                    type="submit"
+                    class="btn btn-outline-light">
+
+                    <i class="bi bi-box-arrow-right me-1"></i>
+
+                    Déconnexion
+
+                </button>
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- ========================= -->
+<!-- DASHBOARD -->
+<!-- ========================= -->
+
+<div class="dashboard-container">
+
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
+
+    <div class="dashboard-header">
+
+        <h1>
+            Dashboard AB Maintenance
+        </h1>
+
+        <p>
+            Bienvenue dans votre espace de gestion
+            et de maintenance industrielle.
+        </p>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- STATISTIQUES -->
+    <!-- ========================= -->
+
+    <div class="row g-4">
+
+
+        <!-- TOTAL EQUIPEMENTS -->
+
+        <div class="col-md-4">
+
+            <div class="card stat-card h-100">
+
+                <div class="card-body">
+
+                    <div class="stat-icon icon-blue">
+
+                        <i class="bi bi-gear-wide-connected"></i>
+
+                    </div>
+
+
+                    <h5>
+                        Total équipements
+                    </h5>
+
+
+                    <div
+                        class="stat-number"
+                        th:text="${totalEquipements != null ? totalEquipements : 0}">
+
+                        0
+
+                    </div>
+
+
+                    <a
+                        class="btn btn-primary"
+                        th:href="@{/equipements}">
+
+                        <i class="bi bi-arrow-right-circle me-1"></i>
+
+                        Voir les équipements
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EQUIPEMENTS EN PANNE -->
+
+        <div
+            class="col-md-4"
+            th:if="${isAdmin == true or isResponsable == true}">
+
+            <div class="card stat-card h-100">
+
+                <div class="card-body">
+
+                    <div class="stat-icon icon-red">
+
+                        <i class="bi bi-exclamation-triangle"></i>
+
+                    </div>
+
+
+                    <h5>
+                        Équipements en panne
+                    </h5>
+
+
+                    <div
+                        class="stat-number"
+                        th:text="${equipementsEnPanne != null ? equipementsEnPanne : 0}">
+
+                        0
+
+                    </div>
+
+
+                    <a
+                        class="btn btn-danger"
+                        th:href="@{/pannes}">
+
+                        <i class="bi bi-arrow-right-circle me-1"></i>
+
+                        Voir les pannes
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- MAINTENANCES EN RETARD -->
+
+        <div class="col-md-4">
+
+            <div class="card stat-card h-100">
+
+                <div class="card-body">
+
+                    <div class="stat-icon icon-yellow">
+
+                        <i class="bi bi-clock-history"></i>
+
+                    </div>
+
+
+                    <h5>
+                        Maintenances en retard
+                    </h5>
+
+
+                    <div
+                        class="stat-number"
+                        th:text="${maintenancesEnRetard != null ? maintenancesEnRetard : 0}">
+
+                        0
+
+                    </div>
+
+
+                    <a
+                        class="btn btn-warning"
+                        th:href="@{/maintenances}">
+
+                        <i class="bi bi-arrow-right-circle me-1"></i>
+
+                        Voir les maintenances
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- ACCES RAPIDES -->
+    <!-- ========================= -->
+
+    <h2 class="section-title">
+
+        <i class="bi bi-lightning-charge-fill me-2"></i>
+
+        Accès rapides
+
+    </h2>
+
+
+    <div class="row g-4">
+
+
+        <!-- ========================= -->
+        <!-- EQUIPEMENTS -->
+        <!-- ========================= -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-gear quick-icon text-primary"></i>
+
+
+                    <h5 class="card-title">
+
+                        Équipements
+
+                    </h5>
+
+
+                    <p class="card-text">
+
+                        Consulter, ajouter et modifier
+                        les équipements industriels.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-primary"
+                        th:href="@{/equipements}">
+
+                        Gestion des équipements
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- PANNES -->
+        <!-- ADMIN / RESPONSABLE -->
+        <!-- ========================= -->
+
+        <div
+            class="col-md-6 col-lg-3"
+            th:if="${isAdmin or isResponsable}">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-exclamation-octagon quick-icon text-danger"></i>
+
+
+                    <h5 class="card-title">
+
+                        Pannes
+
+                    </h5>
+
+
+                    <p class="card-text">
+
+                        Consulter les pannes signalées
+                        et accéder au diagnostic.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-danger"
+                        th:href="@{/pannes}">
+
+                        Gestion des pannes
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- INTERVENTIONS -->
+        <!-- ========================= -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-tools quick-icon text-secondary"></i>
+
+
+                    <h5
+                        class="card-title"
+                        th:text="${isTechnicien
+                            ? 'Mes interventions'
+                            : 'Interventions'}">
+
+                        Interventions
+
+                    </h5>
+
+
+                    <p
+                        class="card-text"
+                        th:text="${isTechnicien
+                            ? 'Consulter et réaliser les interventions qui vous sont affectées.'
+                            : 'Suivre les interventions réalisées par les techniciens.'}">
+
+                        Suivre les interventions réalisées
+                        par les techniciens.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-secondary"
+                        th:href="@{/interventions}"
+                        th:text="${isTechnicien
+                            ? 'Mes interventions'
+                            : 'Gestion des interventions'}">
+
+                        Gestion des interventions
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- MAINTENANCES -->
+        <!-- ========================= -->
+
+        <div class="col-md-6 col-lg-3">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-calendar-check quick-icon text-warning"></i>
+
+
+                    <h5
+                        class="card-title"
+                        th:text="${isTechnicien
+                            ? 'Mes maintenances'
+                            : 'Maintenance préventive'}">
+
+                        Maintenance préventive
+
+                    </h5>
+
+
+                    <p
+                        class="card-text"
+                        th:text="${isTechnicien
+                            ? 'Consulter et réaliser les maintenances qui vous sont affectées.'
+                            : 'Planifier et suivre les maintenances des équipements.'}">
+
+                        Planifier et suivre les maintenances
+                        des équipements.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-warning"
+                        th:href="@{/maintenances}"
+                        th:text="${isTechnicien
+                            ? 'Mes maintenances'
+                            : 'Voir les maintenances'}">
+
+                        Voir les maintenances
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- UTILISATEURS -->
+        <!-- ADMIN UNIQUEMENT -->
+        <!-- ========================= -->
+
+        <div
+            class="col-md-6 col-lg-3"
+            th:if="${isAdmin}">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-people quick-icon text-success"></i>
+
+
+                    <h5 class="card-title">
+
+                        Utilisateurs
+
+                    </h5>
+
+
+                    <p class="card-text">
+
+                        Ajouter, modifier, activer
+                        et gérer les utilisateurs.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-success"
+                        th:href="@{/utilisateurs}">
+
+                        Gestion des utilisateurs
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- RAPPORTS -->
+        <!-- ADMIN / RESPONSABLE -->
+        <!-- ========================= -->
+
+        <div
+            class="col-md-6 col-lg-3"
+            th:if="${isAdmin or isResponsable}">
+
+            <div class="card quick-card h-100">
+
+                <div class="card-body">
+
+                    <i class="bi bi-file-earmark-bar-graph quick-icon"></i>
+
+
+                    <h5 class="card-title">
+
+                        Rapports
+
+                    </h5>
+
+
+                    <p class="card-text">
+
+                        Consulter les rapports sur les pannes,
+                        interventions et maintenances.
+
+                    </p>
+
+
+                    <a
+                        class="btn btn-outline-dark"
+                        th:href="@{/rapports}">
+
+                        Consulter les rapports
+
+                    </a>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- ===================================== -->
+<!-- ASSISTANT IA - TECHNICIEN UNIQUEMENT -->
+<!-- ===================================== -->
+
+<div
+    th:if="${isTechnicien == true}"
+    class="position-fixed bottom-0 end-0 m-4"
+    style="width: 380px; z-index: 1050;">
+
+    <div class="card shadow-lg border-0 rounded-4">
+
+        <div class="card-header bg-dark text-white rounded-top-4">
+
+            <strong>
+
+                <i class="bi bi-robot me-1"></i>
+
+                Assistant IA Maintenance
+
+            </strong>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <div
+                id="iaConversation"
+                class="border rounded p-3 mb-3 bg-light"
+                style="
+                    height: 250px;
+                    overflow-y: auto;
+                    white-space: pre-wrap;
+                ">
+
+                Bonjour 👋
+                Décrivez le problème observé sur l'équipement.
+
+            </div>
+
+
+            <textarea
+                id="iaQuestion"
+                class="form-control mb-2"
+                rows="3"
+                placeholder="Exemple : La pompe vibre et fait un bruit anormal...">
+            </textarea>
+
+
+            <button
+                type="button"
+                class="btn btn-primary w-100"
+                onclick="envoyerQuestionIA()">
+
+                <i class="bi bi-send me-1"></i>
+
+                Envoyer
+
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ========================= -->
+<!-- BOOTSTRAP JAVASCRIPT -->
+<!-- ========================= -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+<!-- ===================================== -->
+<!-- JAVASCRIPT ASSISTANT IA -->
+<!-- ===================================== -->
+
+<script>
+
+async function envoyerQuestionIA() {
+
+    const questionInput =
+        document.getElementById("iaQuestion");
+
+    const conversation =
+        document.getElementById("iaConversation");
+
+    const question =
+        questionInput.value.trim();
+
+
+    if (question === "") {
+
+        return;
+
+    }
+
+
+    // Afficher la question
+
+    conversation.textContent +=
+        "\n\n👨‍🔧 Vous :\n" + question;
+
+
+    questionInput.value = "";
+
+
+    // Message temporaire
+
+    const messageAttente =
+        "\n\n🤖 Assistant :\nAnalyse en cours...";
+
+
+    conversation.textContent +=
+        messageAttente;
+
+
+    conversation.scrollTop =
+        conversation.scrollHeight;
+
+
+    try {
+
+
+        // =============================
+        // TOKEN CSRF
+        // =============================
+
+        const csrfToken =
+            document
+                .querySelector('meta[name="_csrf"]')
+                .getAttribute("content");
+
+
+        const csrfHeader =
+            document
+                .querySelector('meta[name="_csrf_header"]')
+                .getAttribute("content");
+
+
+        // =============================
+        // APPEL ASSISTANT IA
+        // =============================
+
+        const response =
+            await fetch(
+                "/assistant-ia",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type": "application/json",
+
+                        [csrfHeader]: csrfToken
+
+                    },
+
+                    body: JSON.stringify({
+
+                        question: question
+
+                    })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Erreur HTTP : "
+                + response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "Réponse serveur :",
+            data
+        );
+
+
+        const reponseIA =
+            data.reponse ??
+            "Aucune réponse reçue de l'assistant.";
+
+
+        conversation.textContent =
+            conversation.textContent.replace(
+                messageAttente,
+                "\n\n🤖 Assistant :\n"
+                + reponseIA
+            );
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        conversation.textContent =
+            conversation.textContent.replace(
+                messageAttente,
+                "\n\n❌ Assistant indisponible : "
+                + error.message
+            );
+
+    }
+
+
+    conversation.scrollTop =
+        conversation.scrollHeight;
+
+}
+
+</script>
+
+
+</body>
+
+</html>

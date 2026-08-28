@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Planifier une maintenance - AB Maintenance</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height:100vh;
+            margin:0;
+            background:linear-gradient(135deg,#141c26,#283949);
+            font-family:Arial,sans-serif;
+        }
+
+        .navbar {
+            background:rgba(20,28,38,.98)!important;
+            padding:14px 20px;
+        }
+
+        .navbar-brand {
+            font-size:22px;
+            font-weight:700;
+        }
+
+        .page-container {
+            max-width:900px;
+            margin:40px auto;
+            padding:0 25px 50px;
+        }
+
+        .page-header {
+            color:white;
+            margin-bottom:25px;
+        }
+
+        .page-header h1 {
+            font-size:36px;
+            font-weight:700;
+        }
+
+        .form-card {
+            background:white;
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 14px 35px rgba(0,0,0,.25);
+        }
+
+        .card-title-bar {
+            background:#212529;
+            color:white;
+            padding:20px 25px;
+        }
+
+        .form-card .card-body {
+            padding:30px;
+        }
+
+        .form-label {
+            font-weight:600;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius:10px;
+            padding:11px 13px;
+        }
+
+        .btn {
+            border-radius:9px;
+            font-weight:500;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a th:href="@{/maintenances}"
+           class="btn btn-outline-light">
+
+            Maintenances
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h1>
+            <i class="bi bi-calendar-plus me-2"></i>
+            Planifier une maintenance
+        </h1>
+
+    </div>
+
+    <div class="form-card">
+
+        <div class="card-title-bar">
+
+            <h4 class="mb-0">
+                Informations de maintenance
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="alert alert-light border">
+
+                <strong>Équipement :</strong>
+
+                <span th:text="${maintenance.equipement.nom}">
+                </span>
+
+            </div>
+
+            <form th:action="@{/maintenances/enregistrer}"
+                  th:object="${maintenance}"
+                  method="post">
+
+                <input type="hidden"
+                       th:field="*{equipement.id}">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Type
+                    </label>
+
+                    <select th:field="*{type}"
+                            class="form-select">
+
+                        <option value="PREVENTIVE">
+                            Préventive
+                        </option>
+
+                        <option value="INSPECTION">
+                            Inspection
+                        </option>
+
+                        <option value="CORRECTIVE">
+                            Corrective
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea th:field="*{description}"
+                              class="form-control"
+                              rows="4"
+                              required>
+                    </textarea>
+
+                </div>
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Date prévue
+                        </label>
+
+                        <input type="date"
+                               th:field="*{datePrevue}"
+                               class="form-control"
+                               required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Fréquence en jours
+                        </label>
+
+                        <input type="number"
+                               th:field="*{frequence}"
+                               class="form-control"
+                               min="1">
+
+                    </div>
+
+                </div>
+
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Technicien
+                    </label>
+
+                    <select th:field="*{technicien.id}"
+                            class="form-select">
+
+                        <option value="">
+                            Non affecté
+                        </option>
+
+                        <option th:each="technicien : ${techniciens}"
+                                th:value="${technicien.id}"
+                                th:text="${technicien.prenom + ' ' + technicien.nom}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        <i class="bi bi-calendar-check me-1"></i>
+                        Planifier
+
+                    </button>
+
+                    <a th:href="@{/maintenances}"
+                       class="btn btn-secondary">
+
+                        Annuler
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

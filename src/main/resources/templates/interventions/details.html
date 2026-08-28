@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Intervention - AB Maintenance</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height:100vh;
+            margin:0;
+            background:linear-gradient(135deg,#141c26,#283949);
+            font-family:Arial,sans-serif;
+        }
+
+        .navbar {
+            background:rgba(20,28,38,.98)!important;
+            padding:14px 20px;
+        }
+
+        .navbar-brand {
+            font-weight:700;
+            font-size:22px;
+        }
+
+        .page-container {
+            max-width:1000px;
+            margin:40px auto;
+            padding:0 25px 50px;
+        }
+
+        .page-header {
+            color:white;
+            margin-bottom:25px;
+        }
+
+        .page-header h1 {
+            font-size:36px;
+            font-weight:700;
+        }
+
+        .content-card {
+            background:white;
+            border:none;
+            border-radius:18px;
+            overflow:hidden;
+            box-shadow:0 14px 35px rgba(0,0,0,.25);
+            margin-bottom:25px;
+        }
+
+        .card-title-bar {
+            background:#212529;
+            color:white;
+            padding:18px 24px;
+        }
+
+        .content-card .card-body {
+            padding:26px;
+        }
+
+        .form-control {
+            border-radius:10px;
+        }
+
+        .btn {
+            border-radius:9px;
+            font-weight:500;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a th:href="@{/interventions}"
+           class="btn btn-outline-light">
+
+            Interventions
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h1>
+            <i class="bi bi-tools me-2"></i>
+            Fiche intervention
+        </h1>
+
+    </div>
+
+    <div class="content-card">
+
+        <div class="card-title-bar">
+
+            <h4 class="mb-0">
+                Informations
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Référence :</strong>
+                <span th:text="${intervention.reference}"></span>
+            </p>
+
+            <p>
+                <strong>Équipement :</strong>
+                <span th:text="${intervention.panne.equipement.nom}"></span>
+            </p>
+
+            <p>
+                <strong>Technicien :</strong>
+
+                <span th:if="${intervention.technicien != null}"
+                      th:text="${intervention.technicien.prenom + ' ' + intervention.technicien.nom}">
+                </span>
+
+                <span th:if="${intervention.technicien == null}">
+                    Non affecté
+                </span>
+            </p>
+
+            <p>
+                <strong>Statut :</strong>
+
+                <span th:if="${intervention.statut.name() == 'PLANIFIEE'}"
+                      class="badge bg-secondary">
+                    Planifiée
+                </span>
+
+                <span th:if="${intervention.statut.name() == 'AFFECTEE'}"
+                      class="badge bg-primary">
+                    Affectée
+                </span>
+
+                <span th:if="${intervention.statut.name() == 'EN_COURS'}"
+                      class="badge bg-warning text-dark">
+                    En cours
+                </span>
+
+                <span th:if="${intervention.statut.name() == 'EN_ATTENTE'}"
+                      class="badge bg-info text-dark">
+                    En attente
+                </span>
+
+                <span th:if="${intervention.statut.name() == 'TERMINEE'}"
+                      class="badge bg-success">
+                    Terminée
+                </span>
+
+                <span th:if="${intervention.statut.name() == 'ANNULEE'}"
+                      class="badge bg-danger">
+                    Annulée
+                </span>
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="content-card"
+         th:if="${intervention.statut.name() == 'PLANIFIEE'
+               or intervention.statut.name() == 'AFFECTEE'}">
+
+        <div class="card-body">
+
+            <a th:href="@{/interventions/demarrer/{id}(id=${intervention.id})}"
+               class="btn btn-primary">
+
+                <i class="bi bi-play-circle me-1"></i>
+                Démarrer l'intervention
+
+            </a>
+
+        </div>
+
+    </div>
+
+    <div class="content-card"
+         th:if="${intervention.statut.name() == 'EN_COURS'}">
+
+        <div class="card-title-bar">
+
+            <h4 class="mb-0">
+                Compte rendu
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form th:action="@{/interventions/terminer/{id}(id=${intervention.id})}"
+                  method="post">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Cause réelle
+                    </label>
+
+                    <textarea name="causeReelle"
+                              class="form-control"
+                              rows="3"
+                              required>
+                    </textarea>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Action effectuée
+                    </label>
+
+                    <textarea name="actionEffectuee"
+                              class="form-control"
+                              rows="3"
+                              required>
+                    </textarea>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Observations
+                    </label>
+
+                    <textarea name="observation"
+                              class="form-control"
+                              rows="3">
+                    </textarea>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Résultat
+                    </label>
+
+                    <textarea name="resultat"
+                              class="form-control"
+                              rows="3"
+                              required>
+                    </textarea>
+
+                </div>
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    <i class="bi bi-check-circle me-1"></i>
+                    Terminer l'intervention
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="content-card"
+         th:if="${intervention.statut.name() == 'TERMINEE'}">
+
+        <div class="card-title-bar">
+
+            <h4 class="mb-0">
+                Compte rendu final
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <p>
+                <strong>Cause réelle :</strong>
+                <span th:text="${intervention.causeReelle}"></span>
+            </p>
+
+            <p>
+                <strong>Action effectuée :</strong>
+                <span th:text="${intervention.actionEffectuee}"></span>
+            </p>
+
+            <p>
+                <strong>Observation :</strong>
+                <span th:text="${intervention.observation}"></span>
+            </p>
+
+            <p>
+                <strong>Résultat :</strong>
+                <span th:text="${intervention.resultat}"></span>
+            </p>
+
+        </div>
+
+    </div>
+
+    <a th:href="@{/interventions}"
+       class="btn btn-outline-light">
+
+        <i class="bi bi-arrow-left me-1"></i>
+        Liste des interventions
+
+    </a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

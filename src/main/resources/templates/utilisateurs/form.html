@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title th:text="${utilisateur.id == null
+        ? 'Ajouter un utilisateur - AB Maintenance'
+        : 'Modifier un utilisateur - AB Maintenance'}">
+    </title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(
+                135deg,
+                #141c26,
+                #283949
+            );
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(20, 28, 38, 0.98) !important;
+            padding: 14px 20px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.25);
+        }
+
+        .navbar-brand {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .page-container {
+            max-width: 950px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #c4ccd4;
+        }
+
+        .form-card {
+            border: none;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow:
+                0 14px 35px rgba(0,0,0,.25);
+        }
+
+        .card-title-bar {
+            background: #212529;
+            color: white;
+            padding: 20px 25px;
+        }
+
+        .form-card .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 11px 13px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #6c8eb0;
+            box-shadow:
+                0 0 0 .2rem rgba(40,57,73,.12);
+        }
+
+        .btn {
+            border-radius: 9px;
+            font-weight: 500;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a th:href="@{/utilisateurs}"
+           class="btn btn-outline-light">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Utilisateurs
+
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="page-container">
+
+    <div class="page-header">
+
+        <h1>
+
+            <i class="bi bi-person-gear me-2"></i>
+
+            <span th:text="${utilisateur.id == null
+                ? 'Ajouter un utilisateur'
+                : 'Modifier un utilisateur'}">
+            </span>
+
+        </h1>
+
+        <p>
+            Renseignez les informations du compte utilisateur.
+        </p>
+
+    </div>
+
+    <div class="card form-card">
+
+        <div class="card-title-bar">
+
+            <h4 class="mb-0">
+
+                <i class="bi bi-person-vcard me-2"></i>
+                Informations utilisateur
+
+            </h4>
+
+        </div>
+
+        <div class="card-body">
+
+            <form
+                th:action="@{/utilisateurs/enregistrer}"
+                th:object="${utilisateur}"
+                method="post">
+
+                <input type="hidden"
+                       th:field="*{id}">
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Nom
+                        </label>
+
+                        <input
+                            type="text"
+                            th:field="*{nom}"
+                            class="form-control"
+                            placeholder="Nom"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Prénom
+                        </label>
+
+                        <input
+                            type="text"
+                            th:field="*{prenom}"
+                            class="form-control"
+                            placeholder="Prénom"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            th:field="*{email}"
+                            class="form-control"
+                            placeholder="exemple@abmaintenance.ma"
+                            required>
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Téléphone
+                        </label>
+
+                        <input
+                            type="text"
+                            th:field="*{telephone}"
+                            class="form-control"
+                            placeholder="Téléphone">
+
+                    </div>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Mot de passe
+                    </label>
+
+                    <input
+                        type="password"
+                        th:field="*{motDePasse}"
+                        class="form-control"
+                        placeholder="Mot de passe"
+                        th:required="${utilisateur.id == null}">
+
+                    <small
+                        th:if="${utilisateur.id != null}"
+                        class="text-muted">
+
+                        Laissez ce champ vide pour conserver
+                        le mot de passe actuel.
+
+                    </small>
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Rôle
+                    </label>
+
+                    <select
+                        th:field="*{role.id}"
+                        class="form-select"
+                        required>
+
+                        <option value="">
+                            -- Sélectionner un rôle --
+                        </option>
+
+                        <option
+                            th:each="role : ${roles}"
+                            th:value="${role.id}"
+                            th:text="${role.nom}">
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="form-check mb-4">
+
+                    <input
+                        type="checkbox"
+                        th:field="*{actif}"
+                        class="form-check-input">
+
+                    <label class="form-check-label">
+
+                        <i class="bi bi-person-check me-1"></i>
+                        Compte actif
+
+                    </label>
+
+                </div>
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success">
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        Enregistrer
+
+                    </button>
+
+                    <a
+                        th:href="@{/utilisateurs}"
+                        class="btn btn-secondary">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Annuler
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>

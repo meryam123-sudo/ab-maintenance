@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Équipement - AB Maintenance</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(
+                135deg,
+                #141c26,
+                #283949
+            );
+            font-family: Arial, sans-serif;
+        }
+
+        .navbar {
+            background: rgba(20, 28, 38, 0.98) !important;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+            padding: 14px 20px;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 22px;
+        }
+
+        .page-container {
+            max-width: 1050px;
+            margin: 40px auto;
+            padding: 0 25px 50px;
+        }
+
+        .page-header {
+            color: white;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .page-header p {
+            color: #c4ccd4;
+            margin-bottom: 0;
+        }
+
+        .form-card {
+            background: white;
+            border: none;
+            border-radius: 18px;
+            box-shadow:
+                0 14px 35px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+        }
+
+        .form-card-header {
+            background: #212529;
+            color: white;
+            padding: 20px 25px;
+        }
+
+        .form-card-header h4 {
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .form-card .card-body {
+            padding: 30px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #343a40;
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            border-radius: 10px;
+            padding: 11px 13px;
+            border: 1px solid #ced4da;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #6c8eb0;
+            box-shadow: 0 0 0 0.2rem rgba(40, 57, 73, 0.12);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .btn {
+            border-radius: 9px;
+            font-weight: 500;
+            padding: 10px 18px;
+        }
+
+        .form-actions {
+            border-top: 1px solid #dee2e6;
+            margin-top: 30px;
+            padding-top: 25px;
+        }
+
+        @media (max-width: 768px) {
+
+            .page-header h1 {
+                font-size: 29px;
+            }
+
+            .form-card .card-body {
+                padding: 22px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<!-- ========================= -->
+<!-- NAVBAR -->
+<!-- ========================= -->
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand"
+           th:href="@{/dashboard}">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+            AB Maintenance
+
+        </a>
+
+        <a th:href="@{/equipements}"
+           class="btn btn-outline-light">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Équipements
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- ========================= -->
+<!-- CONTENU -->
+<!-- ========================= -->
+
+<div class="page-container">
+
+
+    <!-- TITRE -->
+
+    <div class="page-header">
+
+        <h1>
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+
+            <span th:text="${equipement.id == null
+                    ? 'Ajouter un équipement'
+                    : 'Modifier un équipement'}">
+
+                Ajouter un équipement
+
+            </span>
+
+        </h1>
+
+        <p th:text="${equipement.id == null
+                ? 'Enregistrez un nouvel équipement industriel dans le système.'
+                : 'Modifiez les informations de cet équipement.'}">
+
+            Enregistrez les informations de l'équipement.
+
+        </p>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CARTE FORMULAIRE -->
+    <!-- ========================= -->
+
+    <div class="card form-card">
+
+        <div class="form-card-header">
+
+            <h4>
+
+                <i class="bi bi-info-circle me-2"></i>
+                Informations de l'équipement
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form
+                th:action="@{/equipements/enregistrer}"
+                th:object="${equipement}"
+                method="post">
+
+
+                <input
+                    type="hidden"
+                    th:field="*{id}">
+
+
+                <div class="section-title">
+
+                    <i class="bi bi-card-text me-2"></i>
+                    Identification
+
+                </div>
+
+
+                <div class="row">
+
+
+                    <!-- REFERENCE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Référence
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{reference}"
+                            placeholder="Ex : EQ-0001"
+                            required>
+
+                    </div>
+
+
+                    <!-- NOM -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Nom de l'équipement
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{nom}"
+                            placeholder="Ex : Compresseur principal"
+                            required>
+
+                    </div>
+
+
+                    <!-- MARQUE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Marque
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{marque}"
+                            placeholder="Ex : Atlas Copco">
+
+                    </div>
+
+
+                    <!-- MODELE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Modèle
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{modele}"
+                            placeholder="Ex : GA15">
+
+                    </div>
+
+
+                    <!-- NUMERO SERIE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Numéro de série
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            th:field="*{numeroSerie}"
+                            placeholder="Numéro de série">
+
+                    </div>
+
+
+                    <!-- ANNEE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Année de fabrication
+                        </label>
+
+                        <input
+                            type="number"
+                            class="form-control"
+                            th:field="*{anneeFabrication}"
+                            placeholder="Ex : 2022">
+
+                    </div>
+
+
+                    <!-- DATE ACQUISITION -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label class="form-label">
+                            Date d'acquisition
+                        </label>
+
+                        <input
+                            type="date"
+                            class="form-control"
+                            th:field="*{dateAcquisition}">
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- CLASSIFICATION -->
+                <!-- ========================= -->
+
+                <div class="section-title mt-2">
+
+                    <i class="bi bi-diagram-3 me-2"></i>
+                    Classification et localisation
+
+                </div>
+
+
+                <div class="row">
+
+
+                    <!-- CATEGORIE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Catégorie
+                        </label>
+
+                        <select
+                            class="form-select"
+                            th:field="*{categorie}"
+                            required>
+
+                            <option value="">
+                                Choisir une catégorie
+                            </option>
+
+                            <option
+                                th:each="categorie : ${categories}"
+                                th:value="${categorie.id}"
+                                th:text="${categorie.nom}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- SITE -->
+
+                    <div class="col-md-6 mb-3">
+
+                        <label class="form-label">
+                            Site
+                        </label>
+
+                        <select
+                            class="form-select"
+                            th:field="*{site}"
+                            required>
+
+                            <option value="">
+                                Choisir un site
+                            </option>
+
+                            <option
+                                th:each="site : ${sites}"
+                                th:value="${site.id}"
+                                th:text="${site.nom}">
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ETAT -->
+
+                    <div class="col-md-6 mb-4">
+
+                        <label class="form-label">
+                            État de l'équipement
+                        </label>
+
+                        <select
+                            class="form-select"
+                            th:field="*{etat}">
+
+                            <option value="OPERATIONNEL">
+                                Opérationnel
+                            </option>
+
+                            <option value="EN_PANNE">
+                                En panne
+                            </option>
+
+                            <option value="EN_MAINTENANCE">
+                                En maintenance
+                            </option>
+
+                            <option value="HORS_SERVICE">
+                                Hors service
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- DESCRIPTION -->
+                <!-- ========================= -->
+
+                <div class="section-title">
+
+                    <i class="bi bi-file-text me-2"></i>
+                    Informations complémentaires
+
+                </div>
+
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Description
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        th:field="*{description}"
+                        rows="5"
+                        placeholder="Description de l'équipement">
+                    </textarea>
+
+                </div>
+
+
+                <!-- ========================= -->
+                <!-- BOUTONS -->
+                <!-- ========================= -->
+
+                <div class="form-actions d-flex flex-wrap gap-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="bi bi-check-circle me-1"></i>
+
+                        <span th:text="${equipement.id == null
+                                ? 'Enregistrer l\'équipement'
+                                : 'Enregistrer les modifications'}">
+
+                            Enregistrer
+
+                        </span>
+
+                    </button>
+
+
+                    <a
+                        th:href="@{/equipements}"
+                        class="btn btn-secondary">
+
+                        <i class="bi bi-x-circle me-1"></i>
+                        Annuler
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- RETOUR -->
+
+    <div class="mt-4">
+
+        <a
+            th:href="@{/equipements}"
+            class="btn btn-outline-light">
+
+            <i class="bi bi-arrow-left me-1"></i>
+            Retour à la liste des équipements
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap JavaScript -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+
+</html>
