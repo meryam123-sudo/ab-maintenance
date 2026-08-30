@@ -24,25 +24,32 @@ public class AdminPasswordReset implements CommandLineRunner {
     @Override
     public void run(String... args) {
 
-        Utilisateur admin =
-                utilisateurRepository
-                        .findByEmail("admin@abmaintenance.ma")
-                        .orElseThrow(() ->
-                                new RuntimeException(
-                                        "Compte administrateur introuvable"
-                                )
-                        );
+        utilisateurRepository
+                .findByEmail("admin@abmaintenance.ma")
+                .ifPresentOrElse(
 
-        admin.setMotDePasse(
-                passwordEncoder.encode("Admin123!")
-        );
+                        admin -> {
 
-        admin.setActif(true);
+                            admin.setMotDePasse(
+                                    passwordEncoder.encode("Admin123!")
+                            );
 
-        utilisateurRepository.save(admin);
+                            admin.setActif(true);
 
-        System.out.println(
-                "Mot de passe administrateur réinitialisé."
-        );
+                            utilisateurRepository.save(admin);
+
+                            System.out.println(
+                                    "Mot de passe administrateur réinitialisé."
+                            );
+                        },
+
+                        () -> {
+
+                            System.out.println(
+                                    "Aucun compte administrateur trouvé. "
+                                    + "L'application continue normalement."
+                            );
+                        }
+                );
     }
 }
