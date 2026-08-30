@@ -21,35 +21,53 @@ public class DataInitializer {
 
         return args -> {
 
+            // ==========================================
+            // 1. Création du rôle ADMIN s'il n'existe pas
+            // ==========================================
+
+            Role adminRole = roleRepository.findAll()
+                    .stream()
+                    .filter(role -> "ADMIN".equals(role.getNom()))
+                    .findFirst()
+                    .orElseGet(() -> {
+
+                        Role nouveauRole = new Role();
+                        nouveauRole.setNom("ADMIN");
+
+                        return roleRepository.save(nouveauRole);
+                    });
+
+
+            // ==========================================
+            // 2. Création du compte administrateur
+            // ==========================================
+
             if (utilisateurRepository
                     .findByEmail("admin@abmaintenance.ma")
                     .isEmpty()) {
-
-                Role adminRole =
-                        roleRepository.findAll()
-                                .stream()
-                                .filter(r ->
-                                    r.getNom().equals("ADMIN")
-                                )
-                                .findFirst()
-                                .orElseThrow();
 
                 Utilisateur admin = new Utilisateur();
 
                 admin.setNom("Administrateur");
                 admin.setPrenom("AB Maintenance");
+
                 admin.setEmail(
-                    "admin@abmaintenance.ma"
+                        "admin@abmaintenance.ma"
                 );
 
                 admin.setMotDePasse(
-                    passwordEncoder.encode("Admin123!")
+                        passwordEncoder.encode("Admin123!")
                 );
 
                 admin.setActif(true);
+
                 admin.setRole(adminRole);
 
                 utilisateurRepository.save(admin);
+
+                System.out.println(
+                        "Compte administrateur créé avec succès."
+                );
             }
         };
     }

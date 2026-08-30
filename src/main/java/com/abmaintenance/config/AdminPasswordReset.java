@@ -1,6 +1,5 @@
 package com.abmaintenance.config;
 
-import com.abmaintenance.entity.Utilisateur;
 import com.abmaintenance.repository.UtilisateurRepository;
 
 import org.springframework.boot.CommandLineRunner;
@@ -26,30 +25,19 @@ public class AdminPasswordReset implements CommandLineRunner {
 
         utilisateurRepository
                 .findByEmail("admin@abmaintenance.ma")
-                .ifPresentOrElse(
+                .ifPresent(admin -> {
 
-                        admin -> {
+                    admin.setMotDePasse(
+                            passwordEncoder.encode("Admin123!")
+                    );
 
-                            admin.setMotDePasse(
-                                    passwordEncoder.encode("Admin123!")
-                            );
+                    admin.setActif(true);
 
-                            admin.setActif(true);
+                    utilisateurRepository.save(admin);
 
-                            utilisateurRepository.save(admin);
-
-                            System.out.println(
-                                    "Mot de passe administrateur réinitialisé."
-                            );
-                        },
-
-                        () -> {
-
-                            System.out.println(
-                                    "Aucun compte administrateur trouvé. "
-                                    + "L'application continue normalement."
-                            );
-                        }
-                );
+                    System.out.println(
+                            "Mot de passe administrateur réinitialisé."
+                    );
+                });
     }
 }
