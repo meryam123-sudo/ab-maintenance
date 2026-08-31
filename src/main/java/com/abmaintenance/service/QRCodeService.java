@@ -23,8 +23,9 @@ public class QRCodeService {
 
     public String genererQRCode(Long idEquipement) throws Exception {
 
+        // URL PUBLIQUE DE LA FICHE ÉQUIPEMENT
         String url = baseUrl
-                + "/equipements/"
+                + "/equipements/public/"
                 + idEquipement;
 
         String nomFichier =
@@ -38,8 +39,7 @@ public class QRCodeService {
             Files.createDirectories(dossier);
         }
 
-        Path chemin =
-                dossier.resolve(nomFichier);
+        Path chemin = dossier.resolve(nomFichier);
 
         Map<EncodeHintType, Object> hints =
                 new HashMap<>();

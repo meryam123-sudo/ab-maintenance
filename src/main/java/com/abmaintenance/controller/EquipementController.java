@@ -19,11 +19,15 @@ import org.springframework.web.bind.annotation.*;
 public class EquipementController {
 
     private final EquipementService equipementService;
+
     private final CategorieRepository categorieRepository;
+
     private final SiteRepository siteRepository;
 
     private final PanneService panneService;
+
     private final InterventionService interventionService;
+
     private final MaintenanceService maintenanceService;
 
 
@@ -35,19 +39,29 @@ public class EquipementController {
             InterventionService interventionService,
             MaintenanceService maintenanceService) {
 
-        this.equipementService = equipementService;
-        this.categorieRepository = categorieRepository;
-        this.siteRepository = siteRepository;
+        this.equipementService =
+                equipementService;
 
-        this.panneService = panneService;
-        this.interventionService = interventionService;
-        this.maintenanceService = maintenanceService;
+        this.categorieRepository =
+                categorieRepository;
+
+        this.siteRepository =
+                siteRepository;
+
+        this.panneService =
+                panneService;
+
+        this.interventionService =
+                interventionService;
+
+        this.maintenanceService =
+                maintenanceService;
     }
 
 
-    // =========================
+    // ==========================================
     // LISTE DES ÉQUIPEMENTS
-    // =========================
+    // ==========================================
 
     @GetMapping
     public String liste(Model model) {
@@ -61,9 +75,9 @@ public class EquipementController {
     }
 
 
-    // =========================
+    // ==========================================
     // AJOUTER UN ÉQUIPEMENT
-    // =========================
+    // ==========================================
 
     @GetMapping("/ajouter")
     public String ajouter(Model model) {
@@ -87,9 +101,9 @@ public class EquipementController {
     }
 
 
-    // =========================
+    // ==========================================
     // ENREGISTRER UN ÉQUIPEMENT
-    // =========================
+    // ==========================================
 
     @PostMapping("/enregistrer")
     public String enregistrer(
@@ -101,9 +115,9 @@ public class EquipementController {
     }
 
 
-    // =========================
+    // ==========================================
     // MODIFIER UN ÉQUIPEMENT
-    // =========================
+    // ==========================================
 
     @GetMapping("/modifier/{id}")
     public String modifier(
@@ -129,9 +143,9 @@ public class EquipementController {
     }
 
 
-    // =========================
+    // ==========================================
     // SUPPRIMER UN ÉQUIPEMENT
-    // =========================
+    // ==========================================
 
     @GetMapping("/supprimer/{id}")
     public String supprimer(
@@ -143,34 +157,84 @@ public class EquipementController {
     }
 
 
-    // =========================
-    // DÉTAILS D'UN ÉQUIPEMENT
-    // =========================
+    // ==========================================
+    // RÉGÉNÉRER TOUS LES QR CODES
+    // ==========================================
+
+    @GetMapping("/regenerer-qrcodes")
+    public String regenererTousLesQRCodes() {
+
+        equipementService.regenererTousLesQRCodes();
+
+        return "redirect:/equipements";
+    }
+
+
+    // ==========================================
+    // FICHE PUBLIQUE ACCESSIBLE PAR QR CODE
+    // AUCUNE CONNEXION NÉCESSAIRE
+    // ==========================================
+
+    @GetMapping("/public/{id}")
+    public String detailsPublics(
+            @PathVariable Long id,
+            Model model) {
+
+        Equipement equipement =
+                equipementService.findById(id);
+
+        model.addAttribute(
+                "equipement",
+                equipement
+        );
+
+        model.addAttribute(
+                "pannes",
+                panneService.findByEquipement(id)
+        );
+
+        model.addAttribute(
+                "interventions",
+                interventionService.findByEquipement(id)
+        );
+
+        model.addAttribute(
+                "maintenances",
+                maintenanceService.findByEquipement(id)
+        );
+
+        return "equipements/public";
+    }
+
+
+    // ==========================================
+    // FICHE INTERNE DE L'ÉQUIPEMENT
+    // CONNEXION NÉCESSAIRE
+    // ==========================================
 
     @GetMapping("/{id}")
     public String details(
             @PathVariable Long id,
             Model model) {
 
-        // Informations de l'équipement
+        Equipement equipement =
+                equipementService.findById(id);
+
         model.addAttribute(
                 "equipement",
-                equipementService.findById(id)
+                equipement
         );
 
-        // Pannes liées à l'équipement
         model.addAttribute(
                 "pannes",
                 panneService.findByEquipement(id)
         );
 
-        // Interventions liées à l'équipement
         model.addAttribute(
                 "interventions",
                 interventionService.findByEquipement(id)
         );
 
-        // Maintenances liées à l'équipement
         model.addAttribute(
                 "maintenances",
                 maintenanceService.findByEquipement(id)

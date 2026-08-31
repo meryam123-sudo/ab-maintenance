@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+
+<html lang="fr"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Fiche équipement - AB Maintenance</title>
+
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+    <style>
+
+        body {
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            background: linear-gradient(
+                135deg,
+                #141c26,
+                #283949
+            );
+
+            font-family: Arial, sans-serif;
+        }
+
+
+        .navbar {
+
+            background: rgba(
+                20,
+                28,
+                38,
+                0.98
+            ) !important;
+
+            box-shadow:
+                0 4px 18px
+                rgba(0,0,0,0.25);
+
+            padding: 14px 20px;
+        }
+
+
+        .navbar-brand {
+
+            font-size: 22px;
+
+            font-weight: 700;
+        }
+
+
+        .page-container {
+
+            max-width: 1200px;
+
+            margin: 35px auto;
+
+            padding: 0 20px 50px;
+        }
+
+
+        .page-header {
+
+            color: white;
+
+            margin-bottom: 25px;
+        }
+
+
+        .page-header h1 {
+
+            font-size: 34px;
+
+            font-weight: 700;
+        }
+
+
+        .page-header p {
+
+            color: #c4ccd4;
+        }
+
+
+        .public-badge {
+
+            background: #198754;
+
+            color: white;
+
+            border-radius: 20px;
+
+            padding: 7px 14px;
+
+            display: inline-block;
+
+            font-size: 13px;
+
+            margin-top: 8px;
+        }
+
+
+        .content-card {
+
+            background: white;
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            margin-bottom: 25px;
+
+            box-shadow:
+                0 14px 35px
+                rgba(0,0,0,0.25);
+        }
+
+
+        .card-title-bar {
+
+            background: #212529;
+
+            color: white;
+
+            padding: 18px 24px;
+        }
+
+
+        .card-title-bar h4 {
+
+            margin: 0;
+
+            font-size: 19px;
+
+            font-weight: 600;
+        }
+
+
+        .card-body {
+
+            padding: 25px;
+        }
+
+
+        .info-item {
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid #edf0f2;
+        }
+
+
+        .info-label {
+
+            color: #6c757d;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        .info-value {
+
+            color: #212529;
+
+            font-weight: 500;
+
+            margin-top: 3px;
+        }
+
+
+        .table {
+
+            margin-bottom: 0;
+        }
+
+
+        .table thead th {
+
+            background: #212529;
+
+            color: white;
+
+            border: none;
+
+            white-space: nowrap;
+
+            padding: 14px;
+        }
+
+
+        .table tbody td {
+
+            padding: 13px 14px;
+
+            vertical-align: middle;
+        }
+
+
+        .status-badge {
+
+            padding: 7px 10px;
+
+            border-radius: 8px;
+        }
+
+
+        .footer {
+
+            color: #adb5bd;
+
+            text-align: center;
+
+            padding: 25px;
+        }
+
+
+        @media(max-width:768px) {
+
+            .page-header h1 {
+
+                font-size: 27px;
+            }
+
+            .page-container {
+
+                margin-top: 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ====================================== -->
+<!-- NAVBAR PUBLIQUE -->
+<!-- ====================================== -->
+
+<nav class="navbar navbar-dark">
+
+    <div class="container-fluid">
+
+        <span class="navbar-brand">
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+
+            AB Maintenance
+
+        </span>
+
+    </div>
+
+</nav>
+
+
+<div class="page-container">
+
+
+    <!-- ====================================== -->
+    <!-- TITRE -->
+    <!-- ====================================== -->
+
+    <div class="page-header">
+
+        <h1>
+
+            <i class="bi bi-gear-wide-connected me-2"></i>
+
+            <span th:text="${equipement.nom}">
+                Équipement
+            </span>
+
+        </h1>
+
+
+        <p>
+
+            Fiche d'information de l'équipement
+
+        </p>
+
+
+        <span class="public-badge">
+
+            <i class="bi bi-qr-code-scan me-1"></i>
+
+            Fiche accessible par QR Code
+
+        </span>
+
+    </div>
+
+
+
+    <!-- ====================================== -->
+    <!-- INFORMATIONS -->
+    <!-- ====================================== -->
+
+    <div class="content-card">
+
+
+        <div class="card-title-bar">
+
+            <h4>
+
+                <i class="bi bi-info-circle me-2"></i>
+
+                Informations de l'équipement
+
+            </h4>
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <div class="row">
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Référence
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.reference}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Nom
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.nom}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Marque
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.marque != null ? equipement.marque : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Modèle
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.modele != null ? equipement.modele : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Numéro de série
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.numeroSerie != null ? equipement.numeroSerie : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Année de fabrication
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.anneeFabrication != null ? equipement.anneeFabrication : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Date d'acquisition
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.dateAcquisition != null ? equipement.dateAcquisition : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Catégorie
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.categorie != null ? equipement.categorie.nom : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Site
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.site != null ? equipement.site.nom : '-'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-md-6">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            État
+                        </div>
+
+
+                        <div class="info-value">
+
+
+                            <span
+                                th:if="${equipement.etat != null and equipement.etat.name() == 'OPERATIONNEL'}"
+                                class="badge bg-success status-badge">
+
+                                <i class="bi bi-check-circle me-1"></i>
+
+                                Opérationnel
+
+                            </span>
+
+
+                            <span
+                                th:if="${equipement.etat != null and equipement.etat.name() == 'EN_PANNE'}"
+                                class="badge bg-danger status-badge">
+
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+
+                                En panne
+
+                            </span>
+
+
+                            <span
+                                th:if="${equipement.etat != null and equipement.etat.name() == 'EN_MAINTENANCE'}"
+                                class="badge bg-warning text-dark status-badge">
+
+                                <i class="bi bi-tools me-1"></i>
+
+                                En maintenance
+
+                            </span>
+
+
+                            <span
+                                th:if="${equipement.etat != null and equipement.etat.name() == 'HORS_SERVICE'}"
+                                class="badge bg-secondary status-badge">
+
+                                Hors service
+
+                            </span>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12">
+
+                    <div class="info-item">
+
+                        <div class="info-label">
+                            Description
+                        </div>
+
+                        <div class="info-value"
+                             th:text="${equipement.description != null ? equipement.description : 'Aucune description'}">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================== -->
+    <!-- HISTORIQUE DES PANNES -->
+    <!-- ====================================== -->
+
+    <div class="content-card">
+
+
+        <div class="card-title-bar">
+
+            <h4>
+
+                <i class="bi bi-exclamation-triangle me-2"></i>
+
+                Historique des pannes
+
+            </h4>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>Référence</th>
+
+                    <th>Description</th>
+
+                    <th>Urgence</th>
+
+                    <th>Statut</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                <tr th:each="panne : ${pannes}">
+
+
+                    <td>
+
+                        <strong th:text="${panne.reference}">
+                        </strong>
+
+                    </td>
+
+
+                    <td th:text="${panne.description}">
+                    </td>
+
+
+                    <td th:text="${panne.urgence}">
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge bg-secondary"
+                              th:text="${panne.statut}">
+                        </span>
+
+                    </td>
+
+
+                    <td th:text="${panne.dateSignalement}">
+                    </td>
+
+
+                </tr>
+
+
+                <tr th:if="${#lists.isEmpty(pannes)}">
+
+                    <td colspan="5"
+                        class="text-center text-muted py-4">
+
+                        <i class="bi bi-check-circle fs-3 d-block mb-2"></i>
+
+                        Aucune panne enregistrée.
+
+                    </td>
+
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================== -->
+    <!-- INTERVENTIONS -->
+    <!-- ====================================== -->
+
+    <div class="content-card">
+
+
+        <div class="card-title-bar">
+
+            <h4>
+
+                <i class="bi bi-tools me-2"></i>
+
+                Historique des interventions
+
+            </h4>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>Référence</th>
+
+                    <th>Statut</th>
+
+                    <th>Début</th>
+
+                    <th>Fin</th>
+
+                    <th>Action effectuée</th>
+
+                    <th>Résultat</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                <tr th:each="intervention : ${interventions}">
+
+
+                    <td>
+
+                        <strong
+                            th:text="${intervention.reference}">
+                        </strong>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge bg-primary"
+                              th:text="${intervention.statut}">
+                        </span>
+
+                    </td>
+
+
+                    <td th:text="${intervention.dateDebut != null ? intervention.dateDebut : '-'}">
+                    </td>
+
+
+                    <td th:text="${intervention.dateFin != null ? intervention.dateFin : '-'}">
+                    </td>
+
+
+                    <td th:text="${intervention.actionEffectuee != null ? intervention.actionEffectuee : '-'}">
+                    </td>
+
+
+                    <td th:text="${intervention.resultat != null ? intervention.resultat : '-'}">
+                    </td>
+
+
+                </tr>
+
+
+                <tr th:if="${#lists.isEmpty(interventions)}">
+
+                    <td colspan="6"
+                        class="text-center text-muted py-4">
+
+                        Aucune intervention enregistrée.
+
+                    </td>
+
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ====================================== -->
+    <!-- MAINTENANCES -->
+    <!-- ====================================== -->
+
+    <div class="content-card">
+
+
+        <div class="card-title-bar">
+
+            <h4>
+
+                <i class="bi bi-calendar-check me-2"></i>
+
+                Historique des maintenances
+
+            </h4>
+
+        </div>
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover align-middle">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>Type</th>
+
+                    <th>Description</th>
+
+                    <th>Date prévue</th>
+
+                    <th>Date réalisation</th>
+
+                    <th>Statut</th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+
+                <tr th:each="maintenance : ${maintenances}">
+
+
+                    <td th:text="${maintenance.type}">
+                    </td>
+
+
+                    <td th:text="${maintenance.description != null ? maintenance.description : '-'}">
+                    </td>
+
+
+                    <td th:text="${maintenance.datePrevue != null ? maintenance.datePrevue : '-'}">
+                    </td>
+
+
+                    <td th:text="${maintenance.dateRealisation != null ? maintenance.dateRealisation : '-'}">
+                    </td>
+
+
+                    <td>
+
+                        <span class="badge bg-secondary"
+                              th:text="${maintenance.statut}">
+                        </span>
+
+                    </td>
+
+
+                </tr>
+
+
+                <tr th:if="${#lists.isEmpty(maintenances)}">
+
+                    <td colspan="5"
+                        class="text-center text-muted py-4">
+
+                        Aucune maintenance enregistrée.
+
+                    </td>
+
+                </tr>
+
+
+                </tbody>
+
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="footer">
+
+    <i class="bi bi-gear-wide-connected me-1"></i>
+
+    AB Maintenance — Fiche équipement
+
+</div>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+
+</body>
+
+</html>

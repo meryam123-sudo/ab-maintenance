@@ -11,75 +11,161 @@ import java.util.List;
 public class EquipementService {
 
     private final EquipementRepository equipementRepository;
+
     private final QRCodeService qrCodeService;
 
-    // Constructeur
+
     public EquipementService(
             EquipementRepository equipementRepository,
             QRCodeService qrCodeService) {
 
-        this.equipementRepository = equipementRepository;
-        this.qrCodeService = qrCodeService;
+        this.equipementRepository =
+                equipementRepository;
+
+        this.qrCodeService =
+                qrCodeService;
     }
 
-    // Récupérer tous les équipements
+
+    // ==========================================
+    // RÉCUPÉRER TOUS LES ÉQUIPEMENTS
+    // ==========================================
+
     public List<Equipement> findAll() {
+
         return equipementRepository.findAll();
     }
 
-    // Récupérer un équipement par son ID
+
+    // ==========================================
+    // RÉCUPÉRER UN ÉQUIPEMENT PAR ID
+    // ==========================================
+
     public Equipement findById(Long id) {
 
         return equipementRepository
                 .findById(id)
                 .orElseThrow(() ->
                         new RuntimeException(
-                                "Équipement introuvable"
+                                "Équipement introuvable avec l'id : " + id
                         )
                 );
     }
 
-    // Enregistrer un équipement et générer son QR Code
-    public Equipement save(Equipement equipement) {
+
+    // ==========================================
+    // ENREGISTRER UN ÉQUIPEMENT
+    // ==========================================
+
+    public Equipement save(
+            Equipement equipement) {
 
         try {
 
-            // 1. Enregistrer l'équipement dans la base de données
-            // pour récupérer son ID
             Equipement saved =
-                    equipementRepository.save(equipement);
+                    equipementRepository.save(
+                            equipement
+                    );
 
-            // 2. Vérifier si l'équipement possède déjà un QR Code
+
+            /*
+             * Si aucun QR Code n'existe encore,
+             * on le génère automatiquement.
+             */
+
             if (saved.getQrCode() == null
                     || saved.getQrCode().isBlank()) {
 
-                // 3. Générer le QR Code à partir de l'ID
                 String qrCode =
                         qrCodeService.genererQRCode(
                                 saved.getId()
                         );
 
-                // 4. Ajouter le QR Code à l'équipement
+
                 saved.setQrCode(qrCode);
 
-                // 5. Mettre à jour l'équipement dans la BDD
+
                 saved =
-                        equipementRepository.save(saved);
+                        equipementRepository.save(
+                                saved
+                        );
             }
 
+
             return saved;
+
 
         } catch (Exception e) {
 
             throw new RuntimeException(
-                    "Erreur lors de la génération du QR Code",
+                    "Erreur lors de l'enregistrement de l'équipement "
+                            + "ou de la génération du QR Code",
                     e
             );
         }
     }
 
-    // Supprimer un équipement
+
+    // ==========================================
+    // RÉGÉNÉRER LE QR CODE D'UN ÉQUIPEMENT
+    // ==========================================
+
+    public Equipement regenererQRCode(Long id) {
+
+        try {
+
+            Equipement equipement =
+                    findById(id);
+
+
+            String qrCode =
+                    qrCodeService.genererQRCode(id);
+
+
+            equipement.setQrCode(qrCode);
+
+
+            return equipementRepository.save(
+                    equipement
+            );
+
+
+        } catch (Exception e) {
+
+            throw new RuntimeException(
+                    "Impossible de régénérer le QR Code "
+                            + "de l'équipement " + id,
+                    e
+            );
+        }
+    }
+
+
+    // ==========================================
+    // RÉGÉNÉRER TOUS LES QR CODES
+    // ==========================================
+
+    public void regenererTousLesQRCodes() {
+
+        List<Equipement> equipements =
+                equipementRepository.findAll();
+
+
+        for (Equipement equipement : equipements) {
+
+            regenererQRCode(
+                    equipement.getId()
+            );
+        }
+    }
+
+
+    // ==========================================
+    // SUPPRIMER UN ÉQUIPEMENT
+    // ==========================================
+
     public void delete(Long id) {
+
         equipementRepository.deleteById(id);
     }
 }

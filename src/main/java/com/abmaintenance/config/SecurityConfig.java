@@ -27,9 +27,10 @@ public class SecurityConfig {
         this.utilisateurService = utilisateurService;
     }
 
-    // ===============================
+
+    // ==========================================
     // ENCODAGE DES MOTS DE PASSE
-    // ===============================
+    // ==========================================
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,9 +39,9 @@ public class SecurityConfig {
     }
 
 
-    // ===============================
+    // ==========================================
     // FOURNISSEUR D'AUTHENTIFICATION
-    // ===============================
+    // ==========================================
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider(
@@ -59,9 +60,9 @@ public class SecurityConfig {
     }
 
 
-    // ===============================
+    // ==========================================
     // AUTHENTICATION MANAGER
-    // ===============================
+    // ==========================================
 
     @Bean
     public AuthenticationManager authenticationManager(
@@ -73,9 +74,9 @@ public class SecurityConfig {
     }
 
 
-    // ===============================
-    // CONFIGURATION SECURITE
-    // ===============================
+    // ==========================================
+    // CONFIGURATION DE LA SÉCURITÉ
+    // ==========================================
 
     @Bean
     public SecurityFilterChain securityFilterChain(
@@ -91,36 +92,62 @@ public class SecurityConfig {
 
             .authorizeHttpRequests(auth -> auth
 
+                // ==================================
+                // PARTIE PUBLIQUE
+                // ==================================
+
                 .requestMatchers(
-                    "/login",
-                    "/css/**",
-                    "/js/**",
-                    "/images/**"
+                        "/login",
+                        "/css/**",
+                        "/js/**",
+                        "/images/**",
+                        "/qrcodes/**",
+                        "/equipements/public/**"
                 )
                 .permitAll()
 
+
+                // ==================================
+                // ADMIN
+                // ==================================
+
                 .requestMatchers(
-                    "/admin/**",
-                    "/utilisateurs/**"
+                        "/admin/**",
+                        "/utilisateurs/**"
                 )
                 .hasRole("ADMIN")
 
-                .requestMatchers(
-                    "/responsable/**"
-                )
-                .hasAnyRole(
-                    "ADMIN",
-                    "RESPONSABLE"
-                )
+
+                // ==================================
+                // RESPONSABLE
+                // ==================================
 
                 .requestMatchers(
-                    "/technicien/**"
+                        "/responsable/**"
                 )
                 .hasAnyRole(
-                    "ADMIN",
-                    "RESPONSABLE",
-                    "TECHNICIEN"
+                        "ADMIN",
+                        "RESPONSABLE"
                 )
+
+
+                // ==================================
+                // TECHNICIEN
+                // ==================================
+
+                .requestMatchers(
+                        "/technicien/**"
+                )
+                .hasAnyRole(
+                        "ADMIN",
+                        "RESPONSABLE",
+                        "TECHNICIEN"
+                )
+
+
+                // ==================================
+                // TOUT LE RESTE EST PROTÉGÉ
+                // ==================================
 
                 .anyRequest()
                 .authenticated()
