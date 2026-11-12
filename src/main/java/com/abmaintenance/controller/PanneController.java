@@ -11,7 +11,11 @@ import com.abmaintenance.service.PanneService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/pannes")
@@ -34,10 +38,9 @@ public class PanneController {
         this.utilisateurRepository = utilisateurRepository;
     }
 
-
-    // ============================
+    // ============================================================
     // LISTE DES PANNES
-    // ============================
+    // ============================================================
 
     @GetMapping
     public String liste(Model model) {
@@ -50,10 +53,9 @@ public class PanneController {
         return "pannes/liste";
     }
 
-
-    // ============================
+    // ============================================================
     // DECLARER UNE PANNE
-    // ============================
+    // ============================================================
 
     @GetMapping("/declarer/{equipementId}")
     public String declarer(
@@ -66,11 +68,7 @@ public class PanneController {
                 equipementService.findById(equipementId)
         );
 
-        model.addAttribute(
-                "panne",
-                panne
-        );
-
+        model.addAttribute("panne", panne);
         model.addAttribute(
                 "symptomes",
                 symptomeRepository.findAll()
@@ -79,43 +77,31 @@ public class PanneController {
         return "pannes/form";
     }
 
-
-    // ============================
+    // ============================================================
     // ENREGISTRER UNE PANNE
-    // ============================
+    // ============================================================
 
     @PostMapping("/enregistrer")
     public String enregistrer(
             @ModelAttribute Panne panne,
             Authentication authentication) {
 
-        Utilisateur utilisateur =
-                utilisateurRepository
-                        .findByEmail(
-                                authentication.getName()
-                        )
-                        .orElseThrow();
+        Utilisateur utilisateur = utilisateurRepository
+                .findByEmail(authentication.getName())
+                .orElseThrow();
 
-        panne.setUtilisateur(
-                utilisateur
-        );
+        panne.setUtilisateur(utilisateur);
 
-        panne.setStatut(
-                StatutPanne.SIGNALEE
-        );
+        panne.setStatut(StatutPanne.SIGNALEE);
 
-        Panne saved =
-                panneService.save(
-                        panne
-                );
+        Panne saved = panneService.save(panne);
 
         return "redirect:/pannes/" + saved.getId();
     }
 
-
-    // ============================
+    // ============================================================
     // DETAILS D'UNE PANNE
-    // ============================
+    // ============================================================
 
     @GetMapping("/{id}")
     public String details(
@@ -130,31 +116,25 @@ public class PanneController {
         return "pannes/details";
     }
 
-
-    // ============================
+    // ============================================================
     // VALIDER UNE PANNE
-    // ============================
+    // ============================================================
 
     @PostMapping("/valider/{id}")
-    public String valider(
-            @PathVariable Long id) {
+    public String valider(@PathVariable Long id) {
 
-        Panne panne =
-                panneService.findById(id);
+        Panne panne = panneService.findById(id);
 
-        if (panne.getStatut()
-                == StatutPanne.SIGNALEE) {
+        if (panne.getStatut() == StatutPanne.SIGNALEE) {
 
-            panne.setStatut(
-                    StatutPanne.VALIDEE
-            );
+            panne.setStatut(StatutPanne.VALIDEE);
 
-            panneService.save(
-                    panne
-            );
+            panneService.save(panne);
         }
 
         return "redirect:/pannes";
     }
-
 }
+
+
+

@@ -2,9 +2,10 @@ package com.abmaintenance.controller;
 
 import com.abmaintenance.entity.EtatEquipement;
 import com.abmaintenance.entity.StatutMaintenance;
+import com.abmaintenance.entity.StatutPanne;
 import com.abmaintenance.repository.EquipementRepository;
 import com.abmaintenance.repository.MaintenanceRepository;
-
+import com.abmaintenance.repository.PanneRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,31 +18,54 @@ public class DashboardController {
 
     private final EquipementRepository equipementRepository;
     private final MaintenanceRepository maintenanceRepository;
+    private final PanneRepository panneRepository;
+
+    // =====================================================
+    // CONSTRUCTEUR
+    // =====================================================
 
     public DashboardController(
             EquipementRepository equipementRepository,
-            MaintenanceRepository maintenanceRepository) {
+            MaintenanceRepository maintenanceRepository,
+            PanneRepository panneRepository) {
 
         this.equipementRepository = equipementRepository;
         this.maintenanceRepository = maintenanceRepository;
+        this.panneRepository = panneRepository;
     }
+
+    // =====================================================
+    // DASHBOARD
+    // =====================================================
 
     @GetMapping("/dashboard")
     public String dashboard(
             Model model,
             Authentication authentication) {
 
-        // ==========================
+        // =================================================
         // STATISTIQUES
-        // ==========================
+        // =================================================
 
-        long totalEquipements =
-                equipementRepository.count();
+        // Équipements
+        long totalEquipements = equipementRepository.count();
 
         long equipementsEnPanne =
                 equipementRepository.countByEtat(
                         EtatEquipement.EN_PANNE
                 );
+
+        // Pannes
+        long totalPannes = panneRepository.count();
+
+        long pannesSignalees =
+                panneRepository.countByStatut(
+                        StatutPanne.SIGNALEE
+                );
+
+        // Maintenances
+        long totalMaintenances =
+                maintenanceRepository.count();
 
         long maintenancesEnRetard =
                 maintenanceRepository
@@ -50,6 +74,10 @@ public class DashboardController {
                                 StatutMaintenance.PLANIFIEE
                         )
                         .size();
+
+        // =================================================
+        // AJOUT DES STATISTIQUES AU MODEL
+        // =================================================
 
         model.addAttribute(
                 "totalEquipements",
@@ -62,14 +90,28 @@ public class DashboardController {
         );
 
         model.addAttribute(
+                "totalPannes",
+                totalPannes
+        );
+
+        model.addAttribute(
+                "pannesSignalees",
+                pannesSignalees
+        );
+
+        model.addAttribute(
+                "totalMaintenances",
+                totalMaintenances
+        );
+
+        model.addAttribute(
                 "maintenancesEnRetard",
                 maintenancesEnRetard
         );
 
-
-        // ==========================
-        // ROLES
-        // ==========================
+        // =================================================
+        // GESTION DES ROLES
+        // =================================================
 
         boolean isAdmin = false;
         boolean isResponsable = false;
@@ -77,33 +119,37 @@ public class DashboardController {
 
         if (authentication != null) {
 
-            isAdmin =
-                    authentication.getAuthorities()
-                            .stream()
-                            .anyMatch(a ->
-                                    "ROLE_ADMIN".equals(
-                                            a.getAuthority()
-                                    )
-                            );
+            isAdmin = authentication
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(authority ->
+                            "ROLE_ADMIN".equals(
+                                    authority.getAuthority()
+                            )
+                    );
 
-            isResponsable =
-                    authentication.getAuthorities()
-                            .stream()
-                            .anyMatch(a ->
-                                    "ROLE_RESPONSABLE".equals(
-                                            a.getAuthority()
-                                    )
-                            );
+            isResponsable = authentication
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(authority ->
+                            "ROLE_RESPONSABLE".equals(
+                                    authority.getAuthority()
+                            )
+                    );
 
-            isTechnicien =
-                    authentication.getAuthorities()
-                            .stream()
-                            .anyMatch(a ->
-                                    "ROLE_TECHNICIEN".equals(
-                                            a.getAuthority()
-                                    )
-                            );
+            isTechnicien = authentication
+                    .getAuthorities()
+                    .stream()
+                    .anyMatch(authority ->
+                            "ROLE_TECHNICIEN".equals(
+                                    authority.getAuthority()
+                            )
+                    );
         }
+
+        // =================================================
+        // ROLES DANS LE MODEL
+        // =================================================
 
         model.addAttribute(
                 "isAdmin",
@@ -119,6 +165,10 @@ public class DashboardController {
                 "isTechnicien",
                 isTechnicien
         );
+
+        // =================================================
+        // RETOUR DU DASHBOARD
+        // =================================================
 
         return "dashboard";
     }

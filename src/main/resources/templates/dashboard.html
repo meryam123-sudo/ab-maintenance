@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="fr"
       xmlns:th="http://www.thymeleaf.org">
 
@@ -7,14 +6,11 @@
 
     <meta charset="UTF-8">
 
-    <title>
-        Dashboard - AB Maintenance
-    </title>
+    <title>Dashboard - AB Maintenance</title>
 
-
-    <!-- ========================= -->
+    <!-- ================================================= -->
     <!-- CSRF SPRING SECURITY -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
 
     <meta name="_csrf"
           th:content="${_csrf.token}">
@@ -22,164 +18,258 @@
     <meta name="_csrf_header"
           th:content="${_csrf.headerName}">
 
+    <!-- ================================================= -->
+    <!-- BOOTSTRAP -->
+    <!-- ================================================= -->
 
-    <!-- Bootstrap CSS -->
     <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-        rel="stylesheet">
-
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet">
 
     <!-- Bootstrap Icons -->
+
     <link
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 
-    <!-- ========================= -->
-    <!-- STYLE DASHBOARD -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
+    <!-- STYLE -->
+    <!-- ================================================= -->
 
     <style>
 
         body {
             min-height: 100vh;
             margin: 0;
+
             background:
                 linear-gradient(
                     135deg,
                     #141c26,
                     #283949
                 );
+
             font-family: Arial, sans-serif;
         }
 
+
+        /* =========================
+           NAVBAR
+           ========================= */
+
         .navbar {
             background: rgba(20, 28, 38, 0.98) !important;
-            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+
+            box-shadow:
+                0 4px 18px rgba(0, 0, 0, 0.25);
+
             padding: 14px 20px;
         }
+
 
         .navbar-brand {
             font-weight: 700;
             font-size: 22px;
         }
 
+
         .navbar .nav-link {
             color: #c9d1d9 !important;
+
             font-weight: 500;
+
             margin-right: 8px;
+
             transition: 0.2s;
         }
+
 
         .navbar .nav-link:hover,
         .navbar .nav-link.active {
             color: #ffffff !important;
         }
 
+
+        /* =========================
+           DASHBOARD
+           ========================= */
+
         .dashboard-container {
+
             max-width: 1350px;
+
             margin: 40px auto;
+
             padding: 0 20px 50px;
         }
 
+
         .dashboard-header {
+
             color: white;
+
             margin-bottom: 30px;
         }
 
+
         .dashboard-header h1 {
+
             font-size: 38px;
+
             font-weight: 700;
+
             margin-bottom: 8px;
         }
 
+
         .dashboard-header p {
+
             color: #c4ccd4;
+
             font-size: 17px;
         }
 
+
+        /* =========================
+           STATISTIQUES
+           ========================= */
+
         .stat-card,
         .quick-card {
+
             border: none;
+
             border-radius: 18px;
+
             background: white;
+
             box-shadow:
                 0 12px 30px rgba(0, 0, 0, 0.20);
+
             transition:
                 transform 0.2s ease,
                 box-shadow 0.2s ease;
         }
 
+
         .stat-card:hover,
         .quick-card:hover {
+
             transform: translateY(-4px);
+
             box-shadow:
                 0 18px 40px rgba(0, 0, 0, 0.28);
         }
 
+
         .stat-card .card-body,
         .quick-card .card-body {
+
             padding: 25px;
         }
 
+
         .stat-icon {
+
             width: 52px;
             height: 52px;
+
             border-radius: 14px;
+
             display: flex;
+
             align-items: center;
             justify-content: center;
+
             font-size: 24px;
+
             margin-bottom: 18px;
         }
 
+
         .icon-blue {
+
             background: #e8f1ff;
+
             color: #0d6efd;
         }
 
+
         .icon-red {
+
             background: #fdebed;
+
             color: #dc3545;
         }
 
+
         .icon-yellow {
+
             background: #fff4d6;
+
             color: #d39e00;
         }
 
+
         .stat-number {
+
             font-size: 38px;
+
             font-weight: 700;
+
             color: #212529;
+
             margin-bottom: 15px;
         }
 
+
+        /* =========================
+           SECTIONS
+           ========================= */
+
         .section-title {
+
             color: white;
+
             font-weight: 700;
+
             margin-top: 45px;
+
             margin-bottom: 22px;
         }
 
+
         .quick-card h5 {
+
             font-weight: 700;
+
             color: #212529;
         }
 
+
         .quick-card p {
+
             color: #6c757d;
+
             min-height: 48px;
         }
 
+
         .quick-icon {
+
             font-size: 28px;
+
             margin-bottom: 15px;
+
             display: block;
         }
 
+
         .btn {
+
             border-radius: 10px;
+
             font-weight: 500;
         }
 
@@ -191,9 +281,9 @@
 <body>
 
 
-<!-- ========================= -->
+<!-- ================================================= -->
 <!-- NAVBAR -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <nav class="navbar navbar-expand-lg navbar-dark">
 
@@ -203,19 +293,20 @@
            th:href="@{/dashboard}">
 
             <i class="bi bi-gear-wide-connected me-2"></i>
+
             AB Maintenance
 
         </a>
 
 
         <button
-            class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarMenu"
-            aria-controls="navbarMenu"
-            aria-expanded="false"
-            aria-label="Afficher la navigation">
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu"
+                aria-expanded="false"
+                aria-label="Afficher la navigation">
 
             <span class="navbar-toggler-icon"></span>
 
@@ -223,14 +314,14 @@
 
 
         <div
-            class="collapse navbar-collapse"
-            id="navbarMenu">
+                class="collapse navbar-collapse"
+                id="navbarMenu">
 
 
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
 
-                <!-- Dashboard -->
+                <!-- DASHBOARD -->
 
                 <li class="nav-item">
 
@@ -245,7 +336,7 @@
                 </li>
 
 
-                <!-- Équipements -->
+                <!-- EQUIPEMENTS -->
 
                 <li class="nav-item">
 
@@ -259,7 +350,7 @@
                 </li>
 
 
-                <!-- Pannes : ADMIN et RESPONSABLE -->
+                <!-- PANNES -->
 
                 <li class="nav-item"
                     th:if="${isAdmin or isResponsable}">
@@ -274,7 +365,7 @@
                 </li>
 
 
-                <!-- Interventions -->
+                <!-- INTERVENTIONS -->
 
                 <li class="nav-item">
 
@@ -288,7 +379,7 @@
                 </li>
 
 
-                <!-- Maintenances -->
+                <!-- MAINTENANCES -->
 
                 <li class="nav-item">
 
@@ -302,7 +393,7 @@
                 </li>
 
 
-                <!-- Utilisateurs : ADMIN -->
+                <!-- UTILISATEURS -->
 
                 <li class="nav-item"
                     th:if="${isAdmin}">
@@ -317,7 +408,7 @@
                 </li>
 
 
-                <!-- Rôles : ADMIN -->
+                <!-- ROLES -->
 
                 <li class="nav-item"
                     th:if="${isAdmin}">
@@ -332,7 +423,7 @@
                 </li>
 
 
-                <!-- Catégories : ADMIN -->
+                <!-- CATEGORIES -->
 
                 <li class="nav-item"
                     th:if="${isAdmin}">
@@ -347,7 +438,7 @@
                 </li>
 
 
-                <!-- Rapports : ADMIN et RESPONSABLE -->
+                <!-- RAPPORTS -->
 
                 <li class="nav-item"
                     th:if="${isAdmin or isResponsable}">
@@ -361,21 +452,18 @@
 
                 </li>
 
-
             </ul>
 
 
-            <!-- ========================= -->
             <!-- DECONNEXION -->
-            <!-- ========================= -->
 
             <form th:action="@{/logout}"
                   method="post"
                   class="d-flex">
 
                 <button
-                    type="submit"
-                    class="btn btn-outline-light">
+                        type="submit"
+                        class="btn btn-outline-light">
 
                     <i class="bi bi-box-arrow-right me-1"></i>
 
@@ -393,16 +481,14 @@
 </nav>
 
 
-<!-- ========================= -->
+<!-- ================================================= -->
 <!-- DASHBOARD -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <div class="dashboard-container">
 
 
-    <!-- ========================= -->
     <!-- HEADER -->
-    <!-- ========================= -->
 
     <div class="dashboard-header">
 
@@ -418,9 +504,9 @@
     </div>
 
 
-    <!-- ========================= -->
+    <!-- ================================================= -->
     <!-- STATISTIQUES -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
 
     <div class="row g-4">
 
@@ -446,8 +532,8 @@
 
 
                     <div
-                        class="stat-number"
-                        th:text="${totalEquipements != null ? totalEquipements : 0}">
+                            class="stat-number"
+                            th:text="${totalEquipements != null ? totalEquipements : 0}">
 
                         0
 
@@ -455,15 +541,14 @@
 
 
                     <a
-                        class="btn btn-primary"
-                        th:href="@{/equipements}">
+                            class="btn btn-primary"
+                            th:href="@{/equipements}">
 
                         <i class="bi bi-arrow-right-circle me-1"></i>
 
                         Voir les équipements
 
                     </a>
-
 
                 </div>
 
@@ -475,8 +560,8 @@
         <!-- EQUIPEMENTS EN PANNE -->
 
         <div
-            class="col-md-4"
-            th:if="${isAdmin == true or isResponsable == true}">
+                class="col-md-4"
+                th:if="${isAdmin == true or isResponsable == true}">
 
             <div class="card stat-card h-100">
 
@@ -495,8 +580,8 @@
 
 
                     <div
-                        class="stat-number"
-                        th:text="${equipementsEnPanne != null ? equipementsEnPanne : 0}">
+                            class="stat-number"
+                            th:text="${equipementsEnPanne != null ? equipementsEnPanne : 0}">
 
                         0
 
@@ -504,15 +589,14 @@
 
 
                     <a
-                        class="btn btn-danger"
-                        th:href="@{/pannes}">
+                            class="btn btn-danger"
+                            th:href="@{/pannes}">
 
                         <i class="bi bi-arrow-right-circle me-1"></i>
 
                         Voir les pannes
 
                     </a>
-
 
                 </div>
 
@@ -521,7 +605,9 @@
         </div>
 
 
-        <!-- MAINTENANCES EN RETARD -->
+        <!-- ================================================= -->
+        <!-- TOTAL MAINTENANCES -->
+        <!-- ================================================= -->
 
         <div class="col-md-4">
 
@@ -531,19 +617,23 @@
 
                     <div class="stat-icon icon-yellow">
 
-                        <i class="bi bi-clock-history"></i>
+                        <i class="bi bi-calendar-check"></i>
 
                     </div>
 
 
                     <h5>
-                        Maintenances en retard
+                        Total maintenances
                     </h5>
 
 
+                    <!-- IMPORTANT :
+                         On affiche totalMaintenances
+                         et NON maintenancesEnRetard -->
+
                     <div
-                        class="stat-number"
-                        th:text="${maintenancesEnRetard != null ? maintenancesEnRetard : 0}">
+                            class="stat-number"
+                            th:text="${totalMaintenances != null ? totalMaintenances : 0}">
 
                         0
 
@@ -551,15 +641,14 @@
 
 
                     <a
-                        class="btn btn-warning"
-                        th:href="@{/maintenances}">
+                            class="btn btn-warning"
+                            th:href="@{/maintenances}">
 
                         <i class="bi bi-arrow-right-circle me-1"></i>
 
                         Voir les maintenances
 
                     </a>
-
 
                 </div>
 
@@ -571,9 +660,9 @@
     </div>
 
 
-    <!-- ========================= -->
+    <!-- ================================================= -->
     <!-- ACCES RAPIDES -->
-    <!-- ========================= -->
+    <!-- ================================================= -->
 
     <h2 class="section-title">
 
@@ -587,9 +676,7 @@
     <div class="row g-4">
 
 
-        <!-- ========================= -->
         <!-- EQUIPEMENTS -->
-        <!-- ========================= -->
 
         <div class="col-md-6 col-lg-3">
 
@@ -616,13 +703,12 @@
 
 
                     <a
-                        class="btn btn-outline-primary"
-                        th:href="@{/equipements}">
+                            class="btn btn-outline-primary"
+                            th:href="@{/equipements}">
 
                         Gestion des équipements
 
                     </a>
-
 
                 </div>
 
@@ -631,14 +717,11 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- PANNES -->
-        <!-- ADMIN / RESPONSABLE -->
-        <!-- ========================= -->
 
         <div
-            class="col-md-6 col-lg-3"
-            th:if="${isAdmin or isResponsable}">
+                class="col-md-6 col-lg-3"
+                th:if="${isAdmin or isResponsable}">
 
             <div class="card quick-card h-100">
 
@@ -663,13 +746,12 @@
 
 
                     <a
-                        class="btn btn-outline-danger"
-                        th:href="@{/pannes}">
+                            class="btn btn-outline-danger"
+                            th:href="@{/pannes}">
 
                         Gestion des pannes
 
                     </a>
-
 
                 </div>
 
@@ -678,9 +760,7 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- INTERVENTIONS -->
-        <!-- ========================= -->
 
         <div class="col-md-6 col-lg-3">
 
@@ -692,10 +772,10 @@
 
 
                     <h5
-                        class="card-title"
-                        th:text="${isTechnicien
-                            ? 'Mes interventions'
-                            : 'Interventions'}">
+                            class="card-title"
+                            th:text="${isTechnicien
+                                ? 'Mes interventions'
+                                : 'Interventions'}">
 
                         Interventions
 
@@ -703,10 +783,10 @@
 
 
                     <p
-                        class="card-text"
-                        th:text="${isTechnicien
-                            ? 'Consulter et réaliser les interventions qui vous sont affectées.'
-                            : 'Suivre les interventions réalisées par les techniciens.'}">
+                            class="card-text"
+                            th:text="${isTechnicien
+                                ? 'Consulter et réaliser les interventions qui vous sont affectées.'
+                                : 'Suivre les interventions réalisées par les techniciens.'}">
 
                         Suivre les interventions réalisées
                         par les techniciens.
@@ -715,16 +795,15 @@
 
 
                     <a
-                        class="btn btn-outline-secondary"
-                        th:href="@{/interventions}"
-                        th:text="${isTechnicien
-                            ? 'Mes interventions'
-                            : 'Gestion des interventions'}">
+                            class="btn btn-outline-secondary"
+                            th:href="@{/interventions}"
+                            th:text="${isTechnicien
+                                ? 'Mes interventions'
+                                : 'Gestion des interventions'}">
 
                         Gestion des interventions
 
                     </a>
-
 
                 </div>
 
@@ -733,9 +812,7 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- MAINTENANCES -->
-        <!-- ========================= -->
 
         <div class="col-md-6 col-lg-3">
 
@@ -747,10 +824,10 @@
 
 
                     <h5
-                        class="card-title"
-                        th:text="${isTechnicien
-                            ? 'Mes maintenances'
-                            : 'Maintenance préventive'}">
+                            class="card-title"
+                            th:text="${isTechnicien
+                                ? 'Mes maintenances'
+                                : 'Maintenance préventive'}">
 
                         Maintenance préventive
 
@@ -758,10 +835,10 @@
 
 
                     <p
-                        class="card-text"
-                        th:text="${isTechnicien
-                            ? 'Consulter et réaliser les maintenances qui vous sont affectées.'
-                            : 'Planifier et suivre les maintenances des équipements.'}">
+                            class="card-text"
+                            th:text="${isTechnicien
+                                ? 'Consulter et réaliser les maintenances qui vous sont affectées.'
+                                : 'Planifier et suivre les maintenances des équipements.'}">
 
                         Planifier et suivre les maintenances
                         des équipements.
@@ -770,16 +847,15 @@
 
 
                     <a
-                        class="btn btn-outline-warning"
-                        th:href="@{/maintenances}"
-                        th:text="${isTechnicien
-                            ? 'Mes maintenances'
-                            : 'Voir les maintenances'}">
+                            class="btn btn-outline-warning"
+                            th:href="@{/maintenances}"
+                            th:text="${isTechnicien
+                                ? 'Mes maintenances'
+                                : 'Voir les maintenances'}">
 
                         Voir les maintenances
 
                     </a>
-
 
                 </div>
 
@@ -788,14 +864,11 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- UTILISATEURS -->
-        <!-- ADMIN UNIQUEMENT -->
-        <!-- ========================= -->
 
         <div
-            class="col-md-6 col-lg-3"
-            th:if="${isAdmin}">
+                class="col-md-6 col-lg-3"
+                th:if="${isAdmin}">
 
             <div class="card quick-card h-100">
 
@@ -820,13 +893,12 @@
 
 
                     <a
-                        class="btn btn-outline-success"
-                        th:href="@{/utilisateurs}">
+                            class="btn btn-outline-success"
+                            th:href="@{/utilisateurs}">
 
                         Gestion des utilisateurs
 
                     </a>
-
 
                 </div>
 
@@ -835,14 +907,11 @@
         </div>
 
 
-        <!-- ========================= -->
         <!-- RAPPORTS -->
-        <!-- ADMIN / RESPONSABLE -->
-        <!-- ========================= -->
 
         <div
-            class="col-md-6 col-lg-3"
-            th:if="${isAdmin or isResponsable}">
+                class="col-md-6 col-lg-3"
+                th:if="${isAdmin or isResponsable}">
 
             <div class="card quick-card h-100">
 
@@ -867,13 +936,12 @@
 
 
                     <a
-                        class="btn btn-outline-dark"
-                        th:href="@{/rapports}">
+                            class="btn btn-outline-dark"
+                            th:href="@{/rapports}">
 
                         Consulter les rapports
 
                     </a>
-
 
                 </div>
 
@@ -887,14 +955,14 @@
 </div>
 
 
-<!-- ===================================== -->
+<!-- ================================================= -->
 <!-- ASSISTANT IA - TECHNICIEN UNIQUEMENT -->
-<!-- ===================================== -->
+<!-- ================================================= -->
 
 <div
-    th:if="${isTechnicien == true}"
-    class="position-fixed bottom-0 end-0 m-4"
-    style="width: 380px; z-index: 1050;">
+        th:if="${isTechnicien == true}"
+        class="position-fixed bottom-0 end-0 m-4"
+        style="width: 380px; z-index: 1050;">
 
     <div class="card shadow-lg border-0 rounded-4">
 
@@ -915,13 +983,13 @@
 
 
             <div
-                id="iaConversation"
-                class="border rounded p-3 mb-3 bg-light"
-                style="
-                    height: 250px;
-                    overflow-y: auto;
-                    white-space: pre-wrap;
-                ">
+                    id="iaConversation"
+                    class="border rounded p-3 mb-3 bg-light"
+                    style="
+                        height: 250px;
+                        overflow-y: auto;
+                        white-space: pre-wrap;
+                    ">
 
                 Bonjour 👋
                 Décrivez le problème observé sur l'équipement.
@@ -930,17 +998,16 @@
 
 
             <textarea
-                id="iaQuestion"
-                class="form-control mb-2"
-                rows="3"
-                placeholder="Exemple : La pompe vibre et fait un bruit anormal...">
-            </textarea>
+                    id="iaQuestion"
+                    class="form-control mb-2"
+                    rows="3"
+                    placeholder="Exemple : La pompe vibre et fait un bruit anormal..."></textarea>
 
 
             <button
-                type="button"
-                class="btn btn-primary w-100"
-                onclick="envoyerQuestionIA()">
+                    type="button"
+                    class="btn btn-primary w-100"
+                    onclick="envoyerQuestionIA()">
 
                 <i class="bi bi-send me-1"></i>
 
@@ -956,164 +1023,150 @@
 </div>
 
 
-<!-- ========================= -->
+<!-- ================================================= -->
 <!-- BOOTSTRAP JAVASCRIPT -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
 </script>
 
 
-<!-- ===================================== -->
+<!-- ================================================= -->
 <!-- JAVASCRIPT ASSISTANT IA -->
-<!-- ===================================== -->
+<!-- ================================================= -->
 
 <script>
 
-async function envoyerQuestionIA() {
+    async function envoyerQuestionIA() {
 
-    const questionInput =
-        document.getElementById("iaQuestion");
+        const questionInput =
+            document.getElementById("iaQuestion");
 
-    const conversation =
-        document.getElementById("iaConversation");
+        const conversation =
+            document.getElementById("iaConversation");
 
-    const question =
-        questionInput.value.trim();
-
-
-    if (question === "") {
-
-        return;
-
-    }
+        const question =
+            questionInput.value.trim();
 
 
-    // Afficher la question
-
-    conversation.textContent +=
-        "\n\n👨‍🔧 Vous :\n" + question;
-
-
-    questionInput.value = "";
-
-
-    // Message temporaire
-
-    const messageAttente =
-        "\n\n🤖 Assistant :\nAnalyse en cours...";
-
-
-    conversation.textContent +=
-        messageAttente;
-
-
-    conversation.scrollTop =
-        conversation.scrollHeight;
-
-
-    try {
-
-
-        // =============================
-        // TOKEN CSRF
-        // =============================
-
-        const csrfToken =
-            document
-                .querySelector('meta[name="_csrf"]')
-                .getAttribute("content");
-
-
-        const csrfHeader =
-            document
-                .querySelector('meta[name="_csrf_header"]')
-                .getAttribute("content");
-
-
-        // =============================
-        // APPEL ASSISTANT IA
-        // =============================
-
-        const response =
-            await fetch(
-                "/assistant-ia",
-                {
-
-                    method: "POST",
-
-                    headers: {
-
-                        "Content-Type": "application/json",
-
-                        [csrfHeader]: csrfToken
-
-                    },
-
-                    body: JSON.stringify({
-
-                        question: question
-
-                    })
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                "Erreur HTTP : "
-                + response.status
-            );
-
+        if (question === "") {
+            return;
         }
 
 
-        const data =
-            await response.json();
+        // Afficher la question
+
+        conversation.textContent +=
+            "\n\n👨‍🔧 Vous :\n" + question;
 
 
-        console.log(
-            "Réponse serveur :",
-            data
-        );
+        questionInput.value = "";
 
 
-        const reponseIA =
-            data.reponse ??
-            "Aucune réponse reçue de l'assistant.";
+        // Message temporaire
+
+        const messageAttente =
+            "\n\n🤖 Assistant :\nAnalyse en cours...";
 
 
-        conversation.textContent =
-            conversation.textContent.replace(
-                messageAttente,
-                "\n\n🤖 Assistant :\n"
-                + reponseIA
+        conversation.textContent +=
+            messageAttente;
+
+
+        conversation.scrollTop =
+            conversation.scrollHeight;
+
+
+        try {
+
+            // =============================
+            // TOKEN CSRF
+            // =============================
+
+            const csrfToken =
+                document
+                    .querySelector('meta[name="_csrf"]')
+                    .getAttribute("content");
+
+
+            const csrfHeader =
+                document
+                    .querySelector('meta[name="_csrf_header"]')
+                    .getAttribute("content");
+
+
+            // =============================
+            // APPEL ASSISTANT IA
+            // =============================
+
+            const response =
+                await fetch(
+                    "/assistant-ia",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json",
+                            [csrfHeader]: csrfToken
+                        },
+
+                        body: JSON.stringify({
+                            question: question
+                        })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erreur HTTP : "
+                    + response.status
+                );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Réponse serveur :",
+                data
             );
 
 
-    } catch (error) {
+            const reponseIA =
+                data.reponse ??
+                "Aucune réponse reçue de l'assistant.";
 
 
-        console.error(error);
+            conversation.textContent =
+                conversation.textContent.replace(
+                    messageAttente,
+                    "\n\n🤖 Assistant :\n"
+                    + reponseIA
+                );
 
 
-        conversation.textContent =
-            conversation.textContent.replace(
-                messageAttente,
-                "\n\n❌ Assistant indisponible : "
-                + error.message
-            );
+        } catch (error) {
 
+            console.error(error);
+
+
+            conversation.textContent =
+                conversation.textContent.replace(
+                    messageAttente,
+                    "\n\n❌ Assistant indisponible : "
+                    + error.message
+                );
+        }
+
+
+        conversation.scrollTop =
+            conversation.scrollHeight;
     }
-
-
-    conversation.scrollTop =
-        conversation.scrollHeight;
-
-}
 
 </script>
 

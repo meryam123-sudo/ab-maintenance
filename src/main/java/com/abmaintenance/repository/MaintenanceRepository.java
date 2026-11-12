@@ -19,4 +19,10 @@ public interface MaintenanceRepository
             LocalDate date,
             StatutMaintenance statut
     );
+
+    // ==========================================
+    // SUPPRIMER LES MAINTENANCES D'UN ÉQUIPEMENT
+    // ==========================================
+
+    void deleteByEquipementId(Long equipementId);
 }

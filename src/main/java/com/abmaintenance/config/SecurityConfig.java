@@ -97,14 +97,16 @@ public class SecurityConfig {
                 // ==================================
 
                 .requestMatchers(
-                        "/login",
-                        "/css/**",
-                        "/js/**",
-                        "/images/**",
-                        "/qrcodes/**",
-                        "/equipements/public/**"
-                )
-                .permitAll()
+        "/login",
+        "/login/**",
+        "/error",
+        "/css/**",
+        "/js/**",
+        "/images/**",
+        "/qrcodes/**",
+        "/equipements/public/**"
+)
+.permitAll()
 
 
                 // ==================================

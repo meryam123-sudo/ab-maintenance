@@ -1,9 +1,14 @@
 package com.abmaintenance.service;
 
 import com.abmaintenance.entity.Equipement;
+
 import com.abmaintenance.repository.EquipementRepository;
+import com.abmaintenance.repository.MaintenanceRepository;
+import com.abmaintenance.repository.InterventionRepository;
+import com.abmaintenance.repository.PanneRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -12,15 +17,37 @@ public class EquipementService {
 
     private final EquipementRepository equipementRepository;
 
+    private final MaintenanceRepository maintenanceRepository;
+
+    private final InterventionRepository interventionRepository;
+
+    private final PanneRepository panneRepository;
+
     private final QRCodeService qrCodeService;
 
 
+    // ==========================================
+    // CONSTRUCTEUR
+    // ==========================================
+
     public EquipementService(
             EquipementRepository equipementRepository,
+            MaintenanceRepository maintenanceRepository,
+            InterventionRepository interventionRepository,
+            PanneRepository panneRepository,
             QRCodeService qrCodeService) {
 
         this.equipementRepository =
                 equipementRepository;
+
+        this.maintenanceRepository =
+                maintenanceRepository;
+
+        this.interventionRepository =
+                interventionRepository;
+
+        this.panneRepository =
+                panneRepository;
 
         this.qrCodeService =
                 qrCodeService;
@@ -164,8 +191,46 @@ public class EquipementService {
     // SUPPRIMER UN ÉQUIPEMENT
     // ==========================================
 
+    @Transactional
     public void delete(Long id) {
 
-        equipementRepository.deleteById(id);
+        // Vérifier que l'équipement existe
+        Equipement equipement =
+                findById(id);
+
+
+        /*
+         * 1. Supprimer les maintenances
+         * directement liées à l'équipement.
+         */
+        maintenanceRepository
+                .deleteByEquipementId(id);
+
+
+        /*
+         * 2. Supprimer les interventions
+         * liées aux pannes de cet équipement.
+         *
+         * Elles doivent être supprimées AVANT
+         * les pannes à cause des clés étrangères.
+         */
+        interventionRepository
+                .deleteByPanneEquipementId(id);
+
+
+        /*
+         * 3. Supprimer les pannes
+         * liées à l'équipement.
+         */
+        panneRepository
+                .deleteByEquipementId(id);
+
+
+        /*
+         * 4. Supprimer finalement
+         * l'équipement lui-même.
+         */
+        equipementRepository
+                .delete(equipement);
     }
 }

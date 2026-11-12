@@ -17,4 +17,12 @@ public interface InterventionRepository
     List<Intervention> findByPanneEquipementId(Long equipementId);
 
     long countByStatut(StatutIntervention statut);
+
+
+    // ==========================================
+    // SUPPRIMER LES INTERVENTIONS
+    // LIÉES AUX PANNES D'UN ÉQUIPEMENT
+    // ==========================================
+
+    void deleteByPanneEquipementId(Long equipementId);
 }
